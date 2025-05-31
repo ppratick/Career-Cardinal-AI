@@ -2,65 +2,70 @@
 <html lang="en">
 <head>
   <title>Job Tracker + Finder</title>
-  <link rel = "styleSheet" href = "style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
     <h1>Job Tracker</h1>
     <p>The start of the project</p>
   </header>
+
   <main>
-      <section class = "board"> 
-        <div class = "column">
+    <section class="board">
+      <div class="column" id="saved">
+        <div class="column-content">
           <h2>Saved</h2>
-            <div class = "jobCards">Microsoft Internship</div>
-            <div class = "jobCards">Costco Cashier</div>
-            <div class = "addJob">
-              <div class = "inputWrapper">
-                <input type="text" class = "jobInput" placeholder="Add Job"> 
-                <button class = "submitButton" data-column="Saved">Submit Job</button>
-              </div>
-              <button class = "addButton" data-column = "Saved">Add Job</button>
-            </div>
+          <div class="job-card">Microsoft Internship</div>
+          <div class="job-card">Costco Cashier</div>
+          <div class="input-wrapper" style="display: none;">
+            <input type="text" class="job-input" placeholder="Add Job" />
+            <button class="submit-button" data-column="saved">Submit Job</button>
+          </div>
         </div>
-         <div class = "column">
+        <button class="add-button" data-column="saved">Add Job</button>
+      </div>
+
+      <div class="column" id="applied">
+        <div class="column-content">
           <h2>Applied</h2>
-            <div class = "jobCards">Wegmans Baker</div>
-            <div class = "jobCards">Amtrek Internship</div>
-             <div class = "addJob"> 
-              <div class = "inputWrapper">
-                <input type="text" class = "jobInput" placeholder="Add Job"> 
-                <button class = "submitButton" data-column="Applied">Submit Job</button>
-              </div>
-              <button class = "addButton" data-column = "Applied">Add Job</button>
-            </div>
+          <div class="job-card">Wegmans Baker</div>
+          <div class="job-card">Amtrak Internship</div>
+          <div class="input-wrapper" style="display: none;">
+            <input type="text" class="job-input" placeholder="Add Job" />
+            <button class="submit-button" data-column="applied">Submit Job</button>
+          </div>
         </div>
-         <div class = "column">
+        <button class="add-button" data-column="applied">Add Job</button>
+      </div>
+
+      <div class="column" id="interview">
+        <div class="column-content">
           <h2>Interview</h2>
-            <div class = "jobCards">Starbucks Manager</div>
-            <div class = "jobCards">Coldstone Scooper</div>
-             <div class = "addJob"> 
-              <div class = "inputWrapper">
-                <input type="text" class = "jobInput" placeholder="Add Job"> 
-                <button class = "submitButton" data-column="Interview">Submit Job</button>
-              </div>
-              <button class = "addButton" data-column = "Interview">Add Job</button>
-            </div>
+          <div class="job-card">Starbucks Manager</div>
+          <div class="job-card">Coldstone Scooper</div>
+          <div class="input-wrapper" style="display: none;">
+            <input type="text" class="job-input" placeholder="Add Job" />
+            <button class="submit-button" data-column="interview">Submit Job</button>
+          </div>
         </div>
-        <div class = "column">
-          <h2>Offers/Decisions</h2>
-            <div class = "jobCards">Microsoft Electrition</div>
-            <div class = "jobCards">Archeologist</div>
-             <div class = "addJob">
-              <div class = "inputWrapper">
-                <input type="text" class = "jobInput" placeholder="Add Job"> 
-                <button class = "submitButton" data-column="Offers/Decisions">Submit Job</button>
-              </div>
-              <button class = "addButton" data-column = "Offers/Decisions">Add Job</button>
-            </div>
+        <button class="add-button" data-column="interview">Add Job</button>
+      </div>
+
+      <div class="column" id="offers-decisions">
+        <div class="column-content">
+          <h2>Offers / Decisions</h2>
+          <div class="job-card">Microsoft Electrician</div>
+          <div class="job-card">Archaeologist</div>
+          <div class="input-wrapper" style="display: none;">
+            <input type="text" class="job-input" placeholder="Add Job" />
+            <button class="submit-button" data-column="offers-decisions">Submit Job</button>
+          </div>
         </div>
-      </section>
+        <button class="add-button" data-column="offers-decisions">Add Job</button>
+      </div>
+    </section>
   </main>
+
   <script src="script.js"></script>
 </body>
 </html>
