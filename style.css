@@ -106,3 +106,12 @@ input:focus,
 button:focus {
   outline: none;
 }
+
+.delete-button {
+  background: none;
+  border: none;
+  color: #ff0000;
+  font-weight: bold;
+  cursor: pointer;
+  float: right;
+}

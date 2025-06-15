@@ -13,8 +13,32 @@ window.addEventListener('DOMContentLoaded', () => {
 function createJobCard(title) {
     const card = document.createElement('div');
     card.className = 'job-card';
-    card.textContent = title;
+
+
+    const titleSpan = document.createElement('span');
+    titleSpan.textContent = title;
+    card.appendChild(titleSpan);
+
+
+    const deleteButton = document.createElement('button');
+    deleteButton.className = 'delete-button';
+    deleteButton.textContent = 'X';
+    deleteButton.addEventListener('click', () => {
+      const column = card.closest('.column');
+      const columnId = column.id;
+      card.remove();
+      removeJobLocalStorage(title, columnId);
+    });
+
+    card.appendChild(deleteButton);
     return card;
+}
+
+function removeJobLocalStorage(title, columnId){
+    const data = JSON.parse(localStorage.getItem('jobData')) || {};
+    if (!data[columnId]) return;
+    data[columnId] = data[columnId].filter(item => item !== title);
+    localStorage.setItem('jobData', JSON.stringify(data));
 }
 
 document.querySelectorAll('.add-button').forEach(button => {
