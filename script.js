@@ -10,10 +10,12 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+let draggedJob = { title: '', sourceColumnId: ''};
+
 function createJobCard(title) {
     const card = document.createElement('div');
     card.className = 'job-card';
-
+    // set draggable = true
 
     const titleSpan = document.createElement('span');
     titleSpan.textContent = title;
@@ -31,9 +33,43 @@ function createJobCard(title) {
     });
 
     card.appendChild(deleteButton);
+
+    // add event listener for dragstart:
+      // - set draggedJob.title to title 
+      // - set draggedJob.sourceColumnId to column id (using closest)
     return card;
 }
 
+// for each column-content elememnt: 
+  // - add event listen for 'dragover':
+    // - prevent default (so drop is allowed) "event.preventDefault();"
+    // - add class for visual feedback (container.classList.add('drag-over')))
+  
+  // - add event listener for 'dragleave' 
+    // remove visual feedback class
+
+  // add event listener for drop
+    // remove visual feedback after drop
+    // get columnId of of what we're dropping into 
+    // if dragged job title is empty return it
+    // if sourceColumnId = dropped columnId then return
+
+    // Remove job from source column in DOM
+    // get all cards in source column 
+    // for each card if card title matches dragged card title remove previous card 
+
+    // Remove job from source column in local storage 
+    // Call removeJobLocalStorage (set title and columnId to draggedJob)
+
+    // Add job to new column 
+    // Create new job card by using createJobCard and pass in draggedJob.title
+    // insert it before the input-wrapper inside the target column-content
+    
+    // Save to new column in localstorage
+    // Call saveJobToLocalStorage and pass in draggedJob.title and droppedColumnId
+
+    // Clear dragged job 
+    // draggedJob = { title: '', sourceColumnId: ''};
 function removeJobLocalStorage(title, columnId){
     const data = JSON.parse(localStorage.getItem('jobData')) || {};
     if (!data[columnId]) return;
