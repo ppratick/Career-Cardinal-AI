@@ -16,6 +16,7 @@ function createJobCard(title) {
     const card = document.createElement('div');
     card.className = 'job-card';
     // set draggable = true
+    let draggable = true; 
 
     const titleSpan = document.createElement('span');
     titleSpan.textContent = title;
@@ -34,17 +35,39 @@ function createJobCard(title) {
 
     card.appendChild(deleteButton);
 
+    dragstart.addEventListener('click', () =>{
+         draggedJob.title = title;
+         draggedJob.sourceColumnId = card.closest('.columnId');
+    });
     // add event listener for dragstart:
       // - set draggedJob.title to title 
       // - set draggedJob.sourceColumnId to column id (using closest)
     return card;
 }
 
+for(const card in columnId) {
+  dragover.addEventListener('click', () =>{
+    event.preventDefault();
+    container.classList.add('drag-over');
+  });
+  dragleave.addEventListener('click', () => {
+    classList.remove('drag-over');
+  });
+
+  dragdrop.addEventListener('click', () => {
+    classList.remove('drag-over');
+    const columnId = columnId;
+    if(!card) return;
+    if (sourceColumnId === columnId) return;
+
+  })
+}
+
 // for each column-content elememnt: 
   // - add event listen for 'dragover':
     // - prevent default (so drop is allowed) "event.preventDefault();"
-    // - add class for visual feedback (container.classList.add('drag-over')))
-  
+    // - add class for visual feedback (container.classList.add('drag-over'))
+
   // - add event listener for 'dragleave' 
     // remove visual feedback class
 
