@@ -15,7 +15,6 @@ let draggedJob = { title: '', sourceColumnId: ''};
 function createJobCard(title) {
     const card = document.createElement('div');
     card.className = 'job-card';
-    // set draggable = true
     card.setAttribute('draggable', 'true')
 
     const titleSpan = document.createElement('span');
@@ -35,35 +34,13 @@ function createJobCard(title) {
 
     card.appendChild(deleteButton);
 
-    dragstart.addEventListener('dragstart', () =>{ /////////
+    card.addEventListener('dragstart', () =>{
          draggedJob.title = title;
          draggedJob.sourceColumnId = card.closest('.columnId');
     });
-    // add event listener for dragstart:
-      // - set draggedJob.title to title 
-      // - set draggedJob.sourceColumnId to column id (using closest)
     return card;
 }
 
-
-
-// for(const card in columnId) { /////
-//   dragover.addEventListener('click', () =>{
-//     event.preventDefault();
-//     container.classList.add('drag-over');
-//   });
-//   dragleave.addEventListener('click', () => {
-//     classList.remove('drag-over');
-//   });
-
-//   dragdrop.addEventListener('click', () => {
-//     classList.remove('drag-over');
-//     const columnId = columnId;
-//     if(!title) return;
-//     if (sourceColumnId === columnId) return;
-
-//   })
-// }
 
 document.querySelectorAll('.column-content').forEach(container => {
   container.addEventListener('dragover', event => {
@@ -94,42 +71,12 @@ document.querySelectorAll('.column-content').forEach(container => {
     container.insertBefore(newCard, container.querySelectorAll('.input-wrapper'));
     saveJobToLocalStorage(draggedJob.title, targetColumnID);
     draggedJob = {title: '', sourceColumnId: ''};
-    
+
 
   });
 
 });
 
-// for each column-content elememnt: 
-  // - add event listen for 'dragover':
-    // - prevent default (so drop is allowed) "event.preventDefault();"
-    // - add class for visual feedback (container.classList.add('drag-over'))
-
-  // - add event listener for 'dragleave' 
-    // remove visual feedback class
-
-  // add event listener for drop
-    // remove visual feedback after drop
-    // get columnId of of what we're dropping into 
-    // if dragged job title is empty return it
-    // if sourceColumnId = dropped columnId then return
-
-    // Remove job from source column in DOM
-    // get all cards in source column 
-    // for each card if card title matches dragged card title remove previous card 
-
-    // Remove job from source column in local storage 
-    // Call removeJobLocalStorage (set title and columnId to draggedJob)
-
-    // Add job to new column 
-    // Create new job card by using createJobCard and pass in draggedJob.title
-    // insert it before the input-wrapper inside the target column-content
-    
-    // Save to new column in localstorage
-    // Call saveJobToLocalStorage and pass in draggedJob.title and droppedColumnId
-
-    // Clear dragged job 
-    // draggedJob = { title: '', sourceColumnId: ''};
 function removeJobLocalStorage(title, columnId){
     const data = JSON.parse(localStorage.getItem('jobData')) || {};
     if (!data[columnId]) return;
