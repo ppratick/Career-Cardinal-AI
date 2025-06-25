@@ -16,7 +16,7 @@ function createJobCard(title) {
     const card = document.createElement('div');
     card.className = 'job-card';
     // set draggable = true
-    let draggable = true; 
+    card.setAttribute('draggable', 'true')
 
     const titleSpan = document.createElement('span');
     titleSpan.textContent = title;
@@ -35,7 +35,7 @@ function createJobCard(title) {
 
     card.appendChild(deleteButton);
 
-    dragstart.addEventListener('click', () =>{
+    dragstart.addEventListener('dragstart', () =>{ /////////
          draggedJob.title = title;
          draggedJob.sourceColumnId = card.closest('.columnId');
     });
@@ -45,23 +45,60 @@ function createJobCard(title) {
     return card;
 }
 
-for(const card in columnId) {
-  dragover.addEventListener('click', () =>{
-    event.preventDefault();
-    container.classList.add('drag-over');
-  });
-  dragleave.addEventListener('click', () => {
-    classList.remove('drag-over');
+
+
+// for(const card in columnId) { /////
+//   dragover.addEventListener('click', () =>{
+//     event.preventDefault();
+//     container.classList.add('drag-over');
+//   });
+//   dragleave.addEventListener('click', () => {
+//     classList.remove('drag-over');
+//   });
+
+//   dragdrop.addEventListener('click', () => {
+//     classList.remove('drag-over');
+//     const columnId = columnId;
+//     if(!title) return;
+//     if (sourceColumnId === columnId) return;
+
+//   })
+// }
+
+document.querySelectorAll('.column-content').forEach(container => {
+  container.addEventListener('dragover', event => {
+  event.preventDefault();
+  container.classList.add('drag-over');
   });
 
-  dragdrop.addEventListener('click', () => {
-    classList.remove('drag-over');
-    const columnId = columnId;
-    if(!card) return;
-    if (sourceColumnId === columnId) return;
+  container.addEventListener('dragleave', () => {
+    container.classList.remove('drag-over');
+  });
 
-  })
-}
+  container.addEventListener('drop', () => {
+    container.classList.remove('drag-over');
+    const targetColumn = container.closest('.column');
+    const targetColumnID = targetColumn.id;
+    if(!draggedJob.title) return;
+    if(draggedJob.sourceColumnId == targetColumnID) return;
+    const sourceColumn = document.getElementById(draggedJob.sourceColumnId);
+    const cards = sourceColumn.querySelectorAll('.job-card');
+    for(let card of cards){
+      if (card.querySelector('span')?.textContent === draggedJob.title) {
+        card.remove();
+        break;
+      }
+    }
+    removeJobLocalStorage(draggedJob.title, draggedJob.sourceColumnId);
+    const newCard = createJobCard(draggedJob.title);
+    container.insertBefore(newCard, container.querySelectorAll('.input-wrapper'));
+    saveJobToLocalStorage(draggedJob.title, targetColumnID);
+    draggedJob = {title: '', sourceColumnId: ''};
+    
+
+  });
+
+});
 
 // for each column-content elememnt: 
   // - add event listen for 'dragover':
