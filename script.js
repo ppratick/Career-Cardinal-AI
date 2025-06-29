@@ -12,15 +12,23 @@ window.addEventListener('DOMContentLoaded', () => {
 
 let draggedJob = { title: '', sourceColumnId: ''};
 
-function createJobCard(title) {
+function createJobCard(job) {
     const card = document.createElement('div');
     card.className = 'job-card';
     card.setAttribute('draggable', 'true')
 
     const titleSpan = document.createElement('span');
-    titleSpan.textContent = title;
+    titleSpan.textContent = job.title;
     card.appendChild(titleSpan);
 
+    const displayDiv = document.createElement('div');
+    displayDiv.className = 'job-details';
+    displayDiv.innerHTML = `<div><strong>Company:</strong> ${job.company || 'N/A'}</div>
+    <div><strong>Date Applied:</strong> ${job.date || 'N/A'}</div>
+    <div><strong>Job Link:</strong> <a href = "${job.link || '#'}" target = "_blank"> ${job.link || 'N/A'}</a></div>
+    <div><strong>Notes:</strong> ${job.notes || 'N/A'}</div>
+
+    `
 
     const deleteButton = document.createElement('button');
     deleteButton.className = 'delete-button';
@@ -29,15 +37,25 @@ function createJobCard(title) {
       const column = card.closest('.column');
       const columnId = column.id;
       card.remove();
-      removeJobLocalStorage(title, columnId);
+      removeJobLocalStorage(job, columnId);
     });
 
     card.appendChild(deleteButton);
 
+    const editButton = document.createElement('button');
+    editButton.textContent = 'Edit';
+    editButton.className = 'edit-button';
+    editButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      displayDiv.style.display = 'none';
+      editDiv.style.display = 'block';
+    });
+
     card.addEventListener('dragstart', () =>{
-         draggedJob.title = title;
+         draggedJob.title = job.title;
          draggedJob.sourceColumnId = card.closest('.column').id;
     });
+
     return card;
 }
 
@@ -110,11 +128,22 @@ document.querySelectorAll('.submit-button').forEach(button => {
   });
 });
 
-function saveJobToLocalStorage(jobTitle, columnID) {
+function saveJobToLocalStorage(job, columnID) {
     const data = JSON.parse(localStorage.getItem('jobData')) || {};
     if (!data[columnID]) {
         data[columnID] = [];
     }
-    data[columnID].push(jobTitle)
+    data[columnID].push(job)
     localStorage.setItem('jobData', JSON.stringify(data));
 }
+
+function updateJobInLocalStorage(title, columnId, updatedJob):
+
+// Load exisiting job data from localstorage, store this in data variable if null set it to {}
+// If data doesn't have columniD key, return 
+// Find the index of the job with matching title in the column 
+
+// if the job was found 
+  // Replace the job at that position with the updated job data 
+  // Save the updated data back to local storage
+  //  localStorage.setItem('job data', data but stringified)
