@@ -36,7 +36,7 @@ function createJobCard(title) {
 
     card.addEventListener('dragstart', () =>{
          draggedJob.title = title;
-         draggedJob.sourceColumnId = card.closest('.columnId');
+         draggedJob.sourceColumnId = card.closest('.column').id;
     });
     return card;
 }
@@ -68,7 +68,7 @@ document.querySelectorAll('.column-content').forEach(container => {
     }
     removeJobLocalStorage(draggedJob.title, draggedJob.sourceColumnId);
     const newCard = createJobCard(draggedJob.title);
-    container.insertBefore(newCard, container.querySelectorAll('.input-wrapper'));
+    container.insertBefore(newCard, container.querySelector('.input-wrapper'));
     saveJobToLocalStorage(draggedJob.title, targetColumnID);
     draggedJob = {title: '', sourceColumnId: ''};
 
@@ -98,9 +98,7 @@ document.querySelectorAll('.submit-button').forEach(button => {
     const jobTitle = input.value.trim();
     if (jobTitle === '') return;
 
-    const newJobInput = document.createElement('div');
-    newJobInput.className = 'job-card';
-    newJobInput.textContent = jobTitle;
+    newJobInput = createJobCard(jobTitle);
 
     const column = document.getElementById(columnID);
     column.querySelector('.column-content').insertBefore(newJobInput, column.querySelector('.input-wrapper'));
