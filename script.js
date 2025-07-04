@@ -137,13 +137,22 @@ function saveJobToLocalStorage(job, columnID) {
     localStorage.setItem('jobData', JSON.stringify(data));
 }
 
-function updateJobInLocalStorage(title, columnId, updatedJob):
+function updateJobInLocalStorage(title, columnId, updatedJob) {
+    // Load existing job data from localStorage, store this in data variable; if null, set it to {}
+    const data = JSON.parse(localStorage.getItem('jobData')) || {};
 
-// Load exisiting job data from localstorage, store this in data variable if null set it to {}
-// If data doesn't have columniD key, return 
-// Find the index of the job with matching title in the column 
+    // If data doesn't have columnId key, return
+    if (!data[columnId]) return;
 
-// if the job was found 
-  // Replace the job at that position with the updated job data 
-  // Save the updated data back to local storage
-  //  localStorage.setItem('job data', data but stringified)
+    // Find the index of the job with matching title in the column
+    const jobIndex = data[columnId].findIndex(job => job.title === title);
+
+    // If the job was found
+    if (jobIndex = 1) {
+        // Replace the job at that position with the updated job data
+        data[columnId][jobIndex] = updatedJob;
+
+        // Save the updated data back to local storage
+        localStorage.setItem('jobData', JSON.stringify(data));
+    }
+}
