@@ -2,20 +2,20 @@ window.addEventListener('DOMContentLoaded', () => {
     const savedData = JSON.parse(localStorage.getItem('jobData')) || {};
     for (const columnID in savedData) {
         const column = document.getElementById(columnID);
-        const jobTitles = savedData[columnID];
-        jobTitles.forEach(title => {
-        const jobCard = createJobCard(title);
+        const jobs = savedData[columnID];
+        jobs.forEach(job => {
+        const jobCard = createJobCard(job);
         column.querySelector('.column-content').insertBefore(jobCard, column.querySelector('.input-wrapper'));
      });
     }
 });
 
-let draggedJob = { title: '', sourceColumnId: ''};
+let draggedJob = { job: null, sourceColumnId: ''};
 
 function createJobCard(job) {
     const card = document.createElement('div');
     card.className = 'job-card';
-    card.setAttribute('draggable', 'true')
+    card.setAttribute('draggable', 'true');
 
     const titleSpan = document.createElement('span');
     titleSpan.textContent = job.title;
@@ -23,12 +23,31 @@ function createJobCard(job) {
 
     const displayDiv = document.createElement('div');
     displayDiv.className = 'job-details';
-    displayDiv.innerHTML = `<div><strong>Company:</strong> ${job.company || 'N/A'}</div>
-    <div><strong>Date Applied:</strong> ${job.date || 'N/A'}</div>
-    <div><strong>Job Link:</strong> <a href = "${job.link || '#'}" target = "_blank"> ${job.link || 'N/A'}</a></div>
-    <div><strong>Notes:</strong> ${job.notes || 'N/A'}</div>
+    displayDiv.innerHTML = `
+      <div><strong>Company:</strong> ${job.company || 'N/A'}</div>
+      <div><strong>Date Applied:</strong> ${job.date || 'N/A'}</div>
+      <div><strong>Job Link:</strong> <a href = "${job.link || '#'}" target = "_blank"> ${job.link || 'N/A'}</a></div>
+      <div><strong>Notes:</strong> ${job.notes || 'N/A'}</div>
+    `; 
 
-    `
+    const editDiv = document.createElement('div')
+    editDiv.className = 'job-details';
+    editDiv.style.display = 'none';
+    editDiv.innerHTML = `
+      <label><strong>Position:</strong><br><input type = "text" class = "edit-title" value = "${job.title || ''}" /></label><br>
+      <label><strong>Company:</strong><br><input type = "text" class = "edit-company" value = "${job.company || ''}" /></label><br>
+      <label><strong>Applied:</strong><br><input type = "date" class = "edit-date" value = "${job.date || ''}" /></label><br>
+      <label><strong>Link:</strong><br><input type = "url" class = "edit-link" value = "${job.link || ''}" /></label><br>
+      <label><strong>Notes:</strong><br><textarea class = "edit-notes">${job.notes || ''}</textarea></label><br>
+      <button class = "update-button">Update</button>
+    `;
+
+    card.appendChild(displayDiv);
+    card.appendChild(editDiv);
+
+    card.addEventListener('click', (e) => {
+     if (e.target.closest('button')) return;
+    });
 
     const deleteButton = document.createElement('button');
     deleteButton.className = 'delete-button';
@@ -37,7 +56,7 @@ function createJobCard(job) {
       const column = card.closest('.column');
       const columnId = column.id;
       card.remove();
-      removeJobLocalStorage(job, columnId);
+      removeJobLocalStorage(job.title, columnId);
     });
 
     card.appendChild(deleteButton);
@@ -51,8 +70,10 @@ function createJobCard(job) {
       editDiv.style.display = 'block';
     });
 
+    card.appendChild(editButton);
+
     card.addEventListener('dragstart', () =>{
-         draggedJob.title = job.title;
+         draggedJob.job = job;
          draggedJob.sourceColumnId = card.closest('.column').id;
     });
 
@@ -74,21 +95,22 @@ document.querySelectorAll('.column-content').forEach(container => {
     container.classList.remove('drag-over');
     const targetColumn = container.closest('.column');
     const targetColumnID = targetColumn.id;
-    if(!draggedJob.title) return;
+    if(!draggedJob.job) return;
     if(draggedJob.sourceColumnId == targetColumnID) return;
+
     const sourceColumn = document.getElementById(draggedJob.sourceColumnId);
     const cards = sourceColumn.querySelectorAll('.job-card');
     for(let card of cards){
-      if (card.querySelector('span')?.textContent === draggedJob.title) {
+      if (card.querySelector('span')?.textContent === draggedJob.job.title) {
         card.remove();
         break;
       }
     }
     removeJobLocalStorage(draggedJob.title, draggedJob.sourceColumnId);
-    const newCard = createJobCard(draggedJob.title);
+    const newCard = createJobCard(draggedJob.job);
     container.insertBefore(newCard, container.querySelector('.input-wrapper'));
     saveJobToLocalStorage(draggedJob.title, targetColumnID);
-    draggedJob = {title: '', sourceColumnId: ''};
+    draggedJob = {job: null, sourceColumnId: ''};
 
 
   });
@@ -98,7 +120,7 @@ document.querySelectorAll('.column-content').forEach(container => {
 function removeJobLocalStorage(title, columnId){
     const data = JSON.parse(localStorage.getItem('jobData')) || {};
     if (!data[columnId]) return;
-    data[columnId] = data[columnId].filter(item => item !== title);
+    data[columnId] = data[columnId].filter(item => item.title !== title);
     localStorage.setItem('jobData', JSON.stringify(data));
 }
 
@@ -133,7 +155,7 @@ function saveJobToLocalStorage(job, columnID) {
     if (!data[columnID]) {
         data[columnID] = [];
     }
-    data[columnID].push(job)
+    data[columnID].push(job);
     localStorage.setItem('jobData', JSON.stringify(data));
 }
 
@@ -148,7 +170,7 @@ function updateJobInLocalStorage(title, columnId, updatedJob) {
     const jobIndex = data[columnId].findIndex(job => job.title === title);
 
     // If the job was found
-    if (jobIndex = 1) {
+    if (jobIndex !== -1) {
         // Replace the job at that position with the updated job data
         data[columnId][jobIndex] = updatedJob;
 
