@@ -72,6 +72,28 @@ function createJobCard(job) {
 
     card.appendChild(editButton);
 
+    card.querySelector('.update-button').addEventListener('click', () => {
+     const columnId = card.closest('.column').id;
+     job.title = editDiv.querySelector('.edit-title').value.trim();
+     job.company = editDiv.querySelector('.edit-company').value.trim();
+     job.date = editDiv.querySelector('.edit-date').value.trim();
+     job.link = editDiv.querySelector('.edit-link').value.trim();
+     job.notes = editDiv.querySelector('.edit-notes').value.trim();
+
+     titleSpan.textContent = job.title;
+
+     updateJobInLocalStorage(job.title, columnId, job);
+    });
+
+    displayDiv.innerHTML = `
+    <div><strong>Company:</strong> ${job.company || 'N/A'}</div>
+    <div><strong>Date Applied:</strong> ${job.date || 'N/A'}</div>
+    <div><strong>Job Link:</strong> <a href = "${job.link || '#'}" target = "_blank"> ${job.link || 'N/A'}</a></div>
+    <div><strong>Notes:</strong> ${job.notes || 'N/A'}</div>
+    `
+    editDiv.style.display = 'none';
+    displayDiv.style.display = 'block';
+
     card.addEventListener('dragstart', () =>{
          draggedJob.job = job;
          draggedJob.sourceColumnId = card.closest('.column').id;
@@ -134,18 +156,30 @@ document.querySelectorAll('.add-button').forEach(button => {
 document.querySelectorAll('.submit-button').forEach(button => {
   button.addEventListener('click', () => {
     const columnID = button.getAttribute('data-column');
-    const input = button.previousElementSibling;
-    const jobTitle = input.value.trim();
-    if (jobTitle === '') return;
+    const inputWrapper = button.parentElement;
 
-    newJobInput = createJobCard(jobTitle);
+    const title = inputWrapper.querySelector('.job-title').value.trim();
+    const company = inputWrapper.querySelector('.company-name').value.trim();
+    const date = inputWrapper.querySelector('.date-applied').value.trim();
+    const link = inputWrapper.querySelector('.job-link').value.trim();
+    const notes = inputWrapper.querySelector('.job-notes')?.value.trim() || '';
+
+    if (title === '') return;
+
+    const job = {title, company, date, link, notes};
+    const newJobInput = createJobCard(job);
 
     const column = document.getElementById(columnID);
-    column.querySelector('.column-content').insertBefore(newJobInput, column.querySelector('.input-wrapper'));
+    column.querySelector('.column-content').insertBefore(newJobInput, column.querySelector('input-wrapper'));
+    saveJobToLocalStorage(job, columnID);
 
-    saveJobToLocalStorage(jobTitle, columnID);
-
-    input.value = '';
+    inputWrapper.querySelector('.job-title').value = '';
+    inputWrapper.querySelector('.company-name').value = '';
+    inputWrapper.querySelector('.date-applied').value = '';
+    inputWrapper.querySelector('.job-link').value = '';
+    if (inputWrapper.querySelector('.job-notes')) {
+      inputWrapper.querySelector('.job-notes').value = '';
+    }
     button.parentElement.style.display = 'none';
   });
 });
