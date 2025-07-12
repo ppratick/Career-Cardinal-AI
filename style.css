@@ -48,6 +48,7 @@ main {
 
 .job-card {
   background-color: #FAFAFA;
+  position: relative;
   color: #212121;
   padding: 10px;
   margin: 10px 0;
@@ -109,6 +110,9 @@ button:focus {
 
 .delete-button {
   background: none;
+  position: absolute;
+  top: 10px;
+  right: 10px;
   border: none;
   color: #ff0000;
   font-weight: bold;
@@ -124,5 +128,16 @@ button:focus {
 .drag-over {
   border: 2px dashed #5C6BC0;
   background-color: #E3F2FD;
+}
+
+
+.job-card span.job-title {
+  color: #5C6BC0;
+  font-size: 15px;
+  font-weight: bold;
+  display: block;
+  border-bottom: 2px solid #5C6BC0;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
 }
 
