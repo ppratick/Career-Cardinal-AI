@@ -5,7 +5,7 @@ body {
   background-color: #F4F6F8;
 }
 
-.search-container {
+#searchInput {
   background-color: #F4F6F8;
   color: #5C6BC0;
   padding: 5px;
