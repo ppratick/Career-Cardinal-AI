@@ -61,13 +61,16 @@ main {
 
 /* Job card styles */
 .job-card {
-  background-color: #FAFAFA;
+
   position: relative;
   color: #212121;
-  padding: 10px;
   margin: 10px 0;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+  border-color: #FAFAFA;
   /* Ensure text wraps inside job cards */
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -79,6 +82,10 @@ main {
   word-wrap: break-word;
   overflow-wrap: break-word;
   white-space: normal;
+}
+
+.job-card:hover {
+  transform: translateY(-4px);
 }
 
 /* Job details section (including notes) */
@@ -93,35 +100,85 @@ main {
   position: absolute;
   bottom: 10px;
   left: 10px;
-  background-color: #FAFAFA;
-  color: #212121;
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  background-color: #007acc;
+  color: white;
+  padding: 10px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
+
 .add-button:hover {
-  background-color: green;
-  color: white;
+  background-color: #005f99;
 }
 
 /* Submit button for job forms */
 .submit-button {
-  background-color: #FAFAFA;
-  color: #212121;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  background-color: #007acc;
+  color: white;
+  padding: 10px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
 .submit-button:hover {
-  background-color: green;
-  color: white;
+  background-color: #005f99;
 }
+
+.edit-button {
+  background-color: #0288d1; 
+  color: white;
+  padding: 10px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.edit-button:hover {
+  background-color: #0277bd;
+}
+
+.update-button {
+  background-color: #007acc;
+  color: white;
+  padding: 10px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.update-button:hover {
+  background-color: #005f99;
+}
+
+.cancel-button {
+  background-color: #e0e0e0; 
+  color: #555555;
+  padding: 10px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.cancel-button:hover {
+  background-color: #cccccc;
+  color: #333333;
+}
+
+
+
 
 /* Input form wrapper */
 .input-wrapper {
@@ -151,10 +208,16 @@ button:focus {
   top: 10px;
   right: 10px;
   border: none;
-  color: #ff0000;
+  color: #e53935;
   font-weight: bold;
   cursor: pointer;
-  float: right;
+  font-size: 16px;
+  border-radius: 6px;
+  transition: color 0.2s ease;
+}
+
+.delete-button:hover {
+  color: #b71c1c;
 }
 
 .job-card:active {
