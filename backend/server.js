@@ -60,7 +60,7 @@ app.post('/jobs', (req, res) => {
 app.put('/jobs/:id', (req, res) =>{
     const jobID = req.params.id;
     const {title, company, date, link, notes} = req.body;
-    const query = 'UPDATE jobs SET title = ?, company = ?, date = ?, link = ?, notes = ?, WHERE id = ?';
+    const query = 'UPDATE jobs SET title = ?, company = ?, date = ?, link = ?, notes = ? WHERE id = ?';
     db.run(query, [title, company, date, link, notes, jobID], function(err) {
         if (err) {
             console.error('Error updating jobs:', err.message);
@@ -93,4 +93,3 @@ app.listen(PORT, () => {
 });
 
 
-// curl [OPTIONS] URL
