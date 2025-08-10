@@ -3,7 +3,7 @@
 // ----------------------
 
 
-const API_BASE_URL = "https://localhost:3000"; // Base URL for API requests
+const API_BASE_URL = "http://localhost:3000"; // Base URL for API requests
 
 async function apiCall(endpoint, options ={}) {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -282,12 +282,18 @@ document.querySelectorAll('.submit-button').forEach(button => {
     const jobData = {title, company, date, link, notes};
 
     try {
-      const createJob = await apiCall('/jobs', {
-
+      const response = await apiCall('/jobs', {
         method: 'POST',
-        body: json.stringify(jobData);
+        body: JSON.stringify(jobData)
       });
-      const newJobInput = createJobCard(createJob);
+      const completeJob = {
+        id: response.id,
+        title: jobData.title,
+        company: jobData.company,
+        date: jobData.date,
+        notes: jobData.notes
+      }
+      const newJobInput = createJobCard(completeJob);
       const column = document.getElementById(columnID);
       column.querySelector('.column-content').insertBefore(newJobInput, column.querySelector('.input-wrapper'));
 
@@ -300,8 +306,11 @@ document.querySelectorAll('.submit-button').forEach(button => {
 
       }
       button.parentElement.style.display = 'none';
+
+      const addButton = column.querySelector('.add-button');
+      addButton.textContent = 'Add Job';
     } catch (error) {
-      console.error ('Failed to create job:', error);
+      console.error('Failed to create job:', error);
       alert('Failed to create job card, please try again');
     }
 
