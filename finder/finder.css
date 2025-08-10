@@ -1,17 +1,19 @@
+/* === JOB FINDER PAGE CSS === */
 body {
-  font-family: Arial, Helvetica, sans-serif;
-  margin: 10px;
-  padding: 10px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #F4F6F8;
+  margin: 0;
+  padding: 0;
+  color: #212121;
 }
 
-
+/* Search Bar + Filter */
 .search-bar-container {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 12px;
-  padding: 20px;
+  padding: 30px 20px;
   flex-wrap: wrap;
 }
 
@@ -37,12 +39,13 @@ body {
 }
 
 .filter-button:hover {
-  background-color: #005f99;
+  background-color: #4051b5;
 }
 
+/* Job Listings Section */
 .job-listings-section {
-  padding: 40px 20px;
-  max-width: 1000px;
+  padding: 20px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -50,13 +53,12 @@ body {
   font-size: 28px;
   margin-bottom: 24px;
   color: #333;
-  text-align: left;
 }
 
-/* Job Cards Grid */
+/* Grid Layout */
 .job-listings-container {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
 }
 
@@ -78,6 +80,7 @@ body {
   margin: 0 0 8px;
   font-size: 20px;
   color: #FF6F61;
+  font-weight: 600;
 }
 
 .company, .location, .type {
@@ -98,5 +101,5 @@ body {
 }
 
 .apply-button:hover {
-  background-color: #005f99;
+  background-color: #4051b5;
 }
