@@ -2,6 +2,23 @@
 // Job Tracker Script
 // ----------------------
 
+
+const API_BASE_URL = "https://localhost:3000"; // Base URL for API requests
+
+async function apiCall(endpoint, options ={}) {
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    headers: {
+      'Content-Type': 'application/json'
+    }, 
+    ...options
+  });
+
+  if(!response.ok){
+    throw new Error(`API call failed: ${response.status} ${response.statusText}`);
+  }
+  return response.json();
+};
+
 // On page load, retrieve any saved job data from localStorage and render it into the correct columns.
 window.addEventListener('DOMContentLoaded', () => {
   const savedData = JSON.parse(localStorage.getItem('jobData')) || {}; // Retrieve saved job data or use empty object
@@ -15,6 +32,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
 
 // Track the next unique job ID and store the currently dragged job for drag-and-drop
 let nextJobID = 1;
@@ -248,7 +266,7 @@ document.querySelectorAll('.add-button').forEach(button => {
 // Submit button logic — adds a new job to a column
 // -------------------
 document.querySelectorAll('.submit-button').forEach(button => {
-  button.addEventListener('click', () => {
+  button.addEventListener('click', async () => {
     const columnID = button.getAttribute('data-column');
     const inputWrapper = button.parentElement;
 
@@ -261,29 +279,32 @@ document.querySelectorAll('.submit-button').forEach(button => {
 
     if (title === '') return; // Require a title
 
-    // Create job object
-    const job = { id: nextJobID++, title, company, date, link, notes };
+    const jobData = {title, company, date, link, notes};
 
-    // Create and insert job card into the column
-    const newJobInput = createJobCard(job);
-    const column = document.getElementById(columnID);
-    column.querySelector('.column-content').insertBefore(newJobInput, column.querySelector('.input-wrapper'));
+    try {
+      const createJob = await apiCall('/jobs', {
 
-    // Save job to localStorage
-    saveJobToLocalStorage(job, columnID);
+        method: 'POST',
+        body: json.stringify(jobData);
+      });
+      const newJobInput = createJobCard(createJob);
+      const column = document.getElementById(columnID);
+      column.querySelector('.column-content').insertBefore(newJobInput, column.querySelector('.input-wrapper'));
 
-    // Clear form inputs
-    inputWrapper.querySelector('.job-title').value = '';
-    inputWrapper.querySelector('.company-name').value = '';
-    inputWrapper.querySelector('.date-applied').value = '';
-    inputWrapper.querySelector('.job-link').value = '';
-    if (inputWrapper.querySelector('.job-notes')) {
-      inputWrapper.querySelector('.job-notes').value = '';
+      inputWrapper.querySelector('.job-title').value = '';
+      inputWrapper.querySelector('.company-name').value = '';
+      inputWrapper.querySelector('.date-applied').value = '';
+      inputWrapper.querySelector('.job-link').value = '';
+      if (inputWrapper.querySelector('.job-notes')) {
+        inputWrapper.querySelector('.job-notes').value = '';
+
+      }
+      button.parentElement.style.display = 'none';
+    } catch (error) {
+      console.error ('Failed to create job:', error);
+      alert('Failed to create job card, please try again');
     }
 
-    // Hide input form and reset Add Job button text
-    button.parentElement.style.display = 'none';
-    addButton.textContent = 'Add Job'; // NOTE: `addButton` must exist in outer scope
   });
 });
 
