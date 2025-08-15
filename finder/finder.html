@@ -7,10 +7,33 @@
 
  <main>
     <section class="board">
-      <div class="search-bar-container">
-        <input type="text" id="searchInput" placeholder="Search jobs..." />
-        <button class="filter-button" onclick="toggleFilters()">Filters</button>
-      </div>
+<div class="search-bar-container">
+  <input type="text" id="searchInput" placeholder="Search jobs..." />
+  <button class="filter-button" onclick="toggleFilters()">Filters</button>
+</div>
+  <div class="filter-panel" id="filterPanel">
+    <label>
+      Job Type:
+      <select>
+        <option value="">Any</option>
+        <option value="full-time">Full-time</option>
+        <option value="part-time">Part-time</option>
+        <option value="internship">Internship</option>
+      </select>
+    </label>
+
+    <label>
+      Location:
+      <input type="text" placeholder="Enter city or remote">
+    </label>
+
+    <label>
+      Company:
+      <input type="text" placeholder="Company name">
+    </label>
+
+    <button class="apply-filters">Apply Filters</button>
+  </div>
     </section>
     <section class="job-listings-section">
   <h2>Top Job Listings</h2>
