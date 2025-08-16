@@ -2,6 +2,8 @@
 // Job Tracker Script
 // ----------------------
 
+const { title } = require("process");
+
 
 const API_BASE_URL = "http://localhost:3000"; // Base URL for API requests
 
@@ -20,16 +22,22 @@ async function apiCall(endpoint, options ={}) {
 };
 
 // On page load, retrieve any saved job data from localStorage and render it into the correct columns.
-window.addEventListener('DOMContentLoaded', () => {
-  const savedData = JSON.parse(localStorage.getItem('jobData')) || {}; // Retrieve saved job data or use empty object
-  for (const columnID in savedData) {
-    const column = document.getElementById(columnID); // Find the column by its ID
-    const jobs = savedData[columnID]; // Get array of jobs for this column
-    jobs.forEach(job => {
-      const jobCard = createJobCard(job); // Create DOM element for job
-      // Insert job card above the input form
-      column.querySelector('.column-content').insertBefore(jobCard, column.querySelector('.input-wrapper'));
-    });
+window.addEventListener('DOMContentLoaded', async() => {
+  try {
+    const jobs = await apiCall('/jobs')
+    console.log('Jobs loaded from the server: ', jobs);
+    if (jobs && jobs.length > 0){
+      jobs.forEach(job =>{
+        const jobCard = createJobCard(job);
+        const appliedColumn = document.getElementById('applied');
+        appliedColumn.querySelector('.column-content').insertBefore(jobCard, appliedColumn.querySelector('.input-wrapper'));
+      });
+    } else {
+      console.log('No jobs found in the database');
+    }
+  } catch (error) {
+    console.error('Failed to load jobs from the server: ', error)
+    alert('Failed to load jobs from the server, please refresh your page');
   }
 });
 
@@ -114,51 +122,61 @@ function createJobCard(job) {
   const deleteButton = document.createElement('button');
   deleteButton.className = 'delete-button';
   deleteButton.textContent = 'X';
-  deleteButton.addEventListener('click', () => {
-    const column = card.closest('.column');
-    const columnId = column.id;
-    card.remove(); // Remove from DOM
-    removeJobLocalStorage(job.id, columnId); // Remove from storage
+  deleteButton.addEventListener('click', async () => {
+    try {
+     await apiCall (`/jobs/${job.id}`, {
+      method: 'DELETE'
+      
+     });
+     card.remove();
+     console.log(`${job.id} was successfully deleted`);
+    } catch (error) {
+      console.error('Failed to delete job:', error);
+      alert('Failed to delete job, please try again');
+    }
   });
   card.appendChild(deleteButton);
 
   // -------------------
   // Update button logic — saves edits to localStorage and updates the display
   // -------------------
-  card.querySelector('.update-button').addEventListener('click', () => {
-    const columnId = card.closest('.column').id;
-    const originalID = job.id;
-    // Update job object from edit form values
-    job.title = editDiv.querySelector('.edit-title').value.trim();
-    job.company = editDiv.querySelector('.edit-company').value.trim();
-    job.date = editDiv.querySelector('.edit-date').value.trim();
-    job.link = editDiv.querySelector('.edit-link').value.trim();
-    job.notes = editDiv.querySelector('.edit-notes').value.trim();
-    titleSpan.textContent = job.title;
-
-    updateJobInLocalStorage(originalID, columnId, job); // Save updates to storage
-
-    // Refresh display with updated info
-    displayDiv.innerHTML = `
-      <div><strong>Company:</strong> ${job.company || ''}</div>
-      <div><strong>Date Applied:</strong> ${job.date || ''}</div>
-      <div><strong>Job Link:</strong> <a href="${job.link || '#'}" target="_blank">${job.link || ''}</a></div>
-      <div><strong>Notes:</strong> ${job.notes || ''}</div>
-    `;
-    // Re-add edit button after overwriting display HTML
-    const newEditButton = document.createElement('button');
-    newEditButton.textContent = 'Edit';
-    newEditButton.className = 'edit-button';
-    newEditButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      displayDiv.style.display = 'none';
-      editDiv.style.display = 'block';
-    });
-    displayDiv.appendChild(newEditButton);
-
-    // Switch back to display mode
-    editDiv.style.display = 'none';
-    displayDiv.style.display = 'block';
+  card.querySelector('.update-button').addEventListener('click', async () => {
+    try{
+      const updatedValues = {
+        title: editDiv.querySelector('.edit-title').value.trim(),
+        company: editDiv.querySelector('.edit-company').value.trim(),
+        date: editDiv.querySelector('.edit-date').value.trim(),
+        link: editDiv.querySelector('.edit-link').value.trim(),
+        notes: editDiv.querySelector('.edit-notes').value.trim()
+      };
+      await apiCall(`/jobs/${job.id}`, {
+        method: 'PUT',
+        body: JSON.stringify(updatedValues)
+      });
+      Object.assign(job, updatedValues);
+      titleSpan.textContent = job.title;
+      displayDiv.innerHTML = `
+        <div><strong>Company:</strong> ${job.company || ''}</div>
+        <div><strong>Date Applied:</strong> ${job.date || ''}</div>
+        <div><strong>Job Link:</strong> <a href="${job.link || '#'}" target="_blank">${job.link || ''}</a></div>
+        <div><strong>Notes:</strong> ${job.notes || ''}</div>
+      `;
+      const newEditButton = document.createElement('button');
+      newEditButton.textContent = 'Edit';
+      newEditButton.className = 'edit-button';
+      newEditButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        displayDiv.style.display = 'none';
+        editDiv.style.display = 'block';
+      });
+      displayDiv.appendChild(newEditButton);
+      editDiv.style.display = 'none';
+      displayDiv.style.display = 'block';
+      console.log(`${job.id} updated successfully`);
+    } catch (error) {
+      console.error('Failed to update job: ', error);
+      alert('Failed to update job, please try again');
+    }
   });
 
   // -------------------

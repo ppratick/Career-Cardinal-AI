@@ -32,7 +32,7 @@ main {
 /* Board layout */
 .board {
   display: flex;
-  gap: 32px;
+  gap: 20px;
   justify-content: center;
   flex-wrap: wrap;
   align-items: flex-start;
@@ -46,8 +46,8 @@ main {
   background: #e8eaf6;
   border: 2.5px solid #c5cae9;
   border-radius: 12px;
-  width: 320px;
-  min-width: 260px;
+  width: 300px;
+  min-width: 240px;
   min-height: 360px;
   padding: 28px 22px 60px 22px;
   box-shadow: 0 4px 16px rgba(92, 107, 192, 0.08);
