@@ -28,7 +28,8 @@ db.run(`
         company TEXT,
         date TEXT,
         link TEXT,
-        notes TEXT
+        notes TEXT,
+        status TEXT DEFAULT 'saved'
     )
 `);
 
@@ -45,9 +46,9 @@ app.get('/jobs', (req, res) => {
 
 // POST a new job
 app.post('/jobs', (req, res) => {
-    const {title, company, date, link, notes} = req.body;
-    const query = 'INSERT INTO jobs (title, company, date, link, notes) VALUES (?, ?, ?, ?, ?)';
-    db.run(query, [title, company, date, link, notes], function (err) {
+    const {title, company, date, link, notes, status} = req.body;
+    const query = 'INSERT INTO jobs (title, company, date, link, notes, status) VALUES (?, ?, ?, ?, ?, ?)';
+    db.run(query, [title, company, date, link, notes, status || 'saved'], function (err) {
         if (err) {
             console.error('Error putting jobs:', err.message);
             return res.status(500).json({error: 'failed to put jobs'});
@@ -59,9 +60,9 @@ app.post('/jobs', (req, res) => {
 // PUT update job
 app.put('/jobs/:id', (req, res) =>{
     const jobID = req.params.id;
-    const {title, company, date, link, notes} = req.body;
-    const query = 'UPDATE jobs SET title = ?, company = ?, date = ?, link = ?, notes = ? WHERE id = ?';
-    db.run(query, [title, company, date, link, notes, jobID], function(err) {
+    const {title, company, date, link, notes, status} = req.body;
+    const query = 'UPDATE jobs SET title = ?, company = ?, date = ?, link = ?, notes = ?, status = ? WHERE id = ?';
+    db.run(query, [title, company, date, link, notes, status || 'saved', jobID], function(err) {
         if (err) {
             console.error('Error updating jobs:', err.message);
             return res.status(500).json({error: 'failed to update job'});

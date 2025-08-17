@@ -2,9 +2,6 @@
 // Job Tracker Script
 // ----------------------
 
-const { title } = require("process");
-
-
 const API_BASE_URL = "http://localhost:3000"; // Base URL for API requests
 
 async function apiCall(endpoint, options ={}) {
@@ -29,8 +26,8 @@ window.addEventListener('DOMContentLoaded', async() => {
     if (jobs && jobs.length > 0){
       jobs.forEach(job =>{
         const jobCard = createJobCard(job);
-        const appliedColumn = document.getElementById('applied');
-        appliedColumn.querySelector('.column-content').insertBefore(jobCard, appliedColumn.querySelector('.input-wrapper'));
+        const targetColumn = document.getElementById(job.status);
+        targetColumn.querySelector('.column-content').insertBefore(jobCard, targetColumn.querySelector('.input-wrapper'));
       });
     } else {
       console.log('No jobs found in the database');
@@ -124,7 +121,7 @@ function createJobCard(job) {
   deleteButton.textContent = 'X';
   deleteButton.addEventListener('click', async () => {
     try {
-     await apiCall (`/jobs/${job.id}`, {
+     await apiCall(`/jobs/${job.id}`, {
       method: 'DELETE'
       
      });
@@ -147,7 +144,8 @@ function createJobCard(job) {
         company: editDiv.querySelector('.edit-company').value.trim(),
         date: editDiv.querySelector('.edit-date').value.trim(),
         link: editDiv.querySelector('.edit-link').value.trim(),
-        notes: editDiv.querySelector('.edit-notes').value.trim()
+        notes: editDiv.querySelector('.edit-notes').value.trim(),
+        status: job.status
       };
       await apiCall(`/jobs/${job.id}`, {
         method: 'PUT',
@@ -216,7 +214,7 @@ document.querySelectorAll('.column-content').forEach(container => {
     container.classList.remove('drag-over');
   });
 
-  container.addEventListener('drop', () => {
+  container.addEventListener('drop', async () => {
     container.classList.remove('drag-over');
     const targetColumn = container.closest('.column');
     const targetColumnID = targetColumn.id;
@@ -225,25 +223,34 @@ document.querySelectorAll('.column-content').forEach(container => {
     if (!draggedJob.job) return;
     if (draggedJob.sourceColumnId == targetColumnID) return;
 
-    // Save job in new column
-    saveJobToLocalStorage(draggedJob.job, targetColumnID);
+    try {
+      await apiCall(`/jobs/${draggedJob.job.id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          ...draggedJob.job,
+          status: targetColumnID
+        })
+      });
 
-    // Create and insert job card into new column
-    const newCard = createJobCard(draggedJob.job);
-    container.insertBefore(newCard, container.querySelector('.input-wrapper'));
+      draggedJob.job.status = targetColumnID;
 
-    // Remove job from old column in DOM
-    const sourceColumn = document.getElementById(draggedJob.sourceColumnId);
-    const cards = sourceColumn.querySelectorAll('.job-card');
-    for (let card of cards) {
-      if (card.getAttribute('data-job-id') == draggedJob.job.id) {
-        card.remove();
-        break;
+      const newJobCard = createJobCard(draggedJob.job);
+      container.insertBefore(newJobCard, container.querySelector('.input-wrapper'));
+
+      const sourceColumn = document.getElementById(draggedJob.sourceColumnId);
+      const cards = sourceColumn.querySelectorAll('.job-card');
+      for (let card of cards) {
+        if (card.getAttribute('data-job-id') == draggedJob.job.id){
+          card.remove();
+          break;
+        }
       }
-    }
 
-    // Remove from old column in storage
-    removeJobLocalStorage(draggedJob.job.id, draggedJob.sourceColumnId);
+      console.log(`${draggedJob.job.id} moved from ${draggedJob.sourceColumnId} to ${targetColumnID}`);
+    } catch (error) {
+      console.error('Failed to update job status: ', error);
+      alert('Failed to move job');
+    }
 
     // Reset dragged job tracking
     draggedJob = { job: null, sourceColumnId: '' };
@@ -297,7 +304,7 @@ document.querySelectorAll('.submit-button').forEach(button => {
 
     if (title === '') return; // Require a title
 
-    const jobData = {title, company, date, link, notes};
+    const jobData = {title, company, date, link, notes, status: columnID};
 
     try {
       const response = await apiCall('/jobs', {
@@ -309,7 +316,9 @@ document.querySelectorAll('.submit-button').forEach(button => {
         title: jobData.title,
         company: jobData.company,
         date: jobData.date,
-        notes: jobData.notes
+        link: jobData.link,
+        notes: jobData.notes,
+        status: jobData.status
       }
       const newJobInput = createJobCard(completeJob);
       const column = document.getElementById(columnID);
