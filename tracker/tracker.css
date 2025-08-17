@@ -92,6 +92,28 @@ main {
   margin-bottom: 10px;
 }
 
+/* Job card spacing and border */
+.job-card {
+  position: relative;
+  background: #fff;
+  color: #212121;
+  margin: 12px 0; /* Vertical spacing between cards */
+  border-radius: 14px;
+  padding: 20px;
+  border: 1px solid #dfe3ee; /* Light border for separation */
+  box-shadow: 0 2px 12px rgba(60, 60, 120, 0.07);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+
+.job-card:hover,
+.job-card:focus-within {
+  transform: translateY(-3px) scale(1.005);
+  box-shadow: 0 6px 20px rgba(92, 107, 192, 0.13);
+}
+
+
 /* Input wrappers inside columns */
 .input-wrapper {
   display: flex;
@@ -141,3 +163,98 @@ main {
   transform: translateY(0);
   box-shadow: none;
 }
+
+/* Edit button styling (matches other buttons, slightly smaller) */
+.edit-button {
+  background: linear-gradient(135deg, #5C6BC0, #007acc);
+  color: #fff;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.3s ease, box-shadow 0.2s ease;
+}
+
+.edit-button:hover {
+  background: linear-gradient(135deg, #4a59a8, #0060a1);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.edit-button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Delete button styling */
+.delete-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #e53935; /* Red color for delete */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.delete-button:hover {
+  background: #d32f2f;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Update button */
+.update-button {
+  background: linear-gradient(135deg, #5C6BC0, #007acc);
+  color: #fff;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-right: 6px;
+  transition: transform 0.2s ease, background 0.3s ease, box-shadow 0.2s ease;
+}
+
+.update-button:hover {
+  background: linear-gradient(135deg, #4a59a8, #0060a1);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.update-button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Cancel button */
+.cancel-button {
+  background: #e0e0e0; /* light gray */
+  color: #555;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cancel-button:hover {
+  background: #cccccc;
+  color: #333;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.cancel-button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+
