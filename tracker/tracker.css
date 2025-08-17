@@ -1,316 +1,143 @@
-/*
-  Professional Stylesheet for Job Tracker
-  ---------------------------------------
-  - Modern, clean, accessible
-  - Responsive board and columns
-  - Enhanced card, button, and form styling
-  - Focus and hover states for accessibility
-*/
-
 /* Reset and base styles */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-}
-
-body {
-  font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f4f6f8;
+}
+
+/* Background with subtle pattern */
+body {
+  font-family: "Segoe UI", Roboto, sans-serif;
+  background: linear-gradient(135deg, #f4f6f8, #e8ecf5);
+  background-image: radial-gradient(circle at 20px 20px, rgba(0,0,0,0.02) 2px, transparent 0);
+  background-size: 40px 40px;
   color: #212121;
   min-height: 100vh;
-}
-
-main {
-  padding: 32px 16px;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-/* Board layout */
-.board {
   display: flex;
-  gap: 20px;
+  flex-direction: column;
+}
+
+/* Header Section */
+.site-header {
+  text-align: center;
+  padding: 40px 20px 20px;
+  color: #2c3e50;
+}
+
+.site-header h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, #5C6BC0, #007acc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+
+.site-header .subtitle {
+  font-size: 1.2rem;
+  color: #555;
+  font-weight: 400;
+}
+
+/* Main board wrapper */
+main {
+  flex: 1;
+  padding: 40px 20px;
+  display: flex;
   justify-content: center;
-  flex-wrap: wrap;
   align-items: flex-start;
 }
 
-/* Column styles */
+/* Glassy board container */
+.board {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  gap: 32px;
+  flex-wrap: wrap;
+  padding: 32px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  max-width: 1300px;
+  width: 100%;
+}
+
+/* Columns */
 .column {
-  position: relative;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  padding: 20px;
+  width: 280px;
   display: flex;
   flex-direction: column;
-  background: #e8eaf6;
-  border: 2.5px solid #c5cae9;
-  border-radius: 12px;
-  width: 300px;
-  min-width: 240px;
-  min-height: 360px;
-  padding: 28px 22px 60px 22px;
-  box-shadow: 0 4px 16px rgba(92, 107, 192, 0.08);
-  transition: box-shadow 0.2s;
+  gap: 15px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.column:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
 
 .column h2 {
-  text-align: center;
-  margin: 0 0 18px 0;
-  font-size: 1.3rem;
-  color: #3949ab;
+  font-size: 1.4rem;
   font-weight: 600;
-  letter-spacing: 1px;
+  color: #37474f;
+  margin-bottom: 10px;
 }
 
-.column-content {
-  flex-grow: 1;
-  min-height: 30px;
-}
-
-/* Job card styles */
-.job-card {
-  position: relative;
-  background: #fff;
-  color: #212121;
-  margin: 14px 0;
-  border-radius: 14px;
-  padding: 26px 22px 20px 22px;
-  box-shadow: 0 2px 12px rgba(60, 60, 120, 0.07);
-  border: 1.5px solid #f0f0f0;
-  word-break: break-word;
-  transition: transform 0.18s, box-shadow 0.18s;
-  display: flex;
-  flex-direction: column;
-  min-height: 180px;
-}
-
-.job-card:hover,
-.job-card:focus-within {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 6px 20px rgba(92, 107, 192, 0.13);
-}
-
-.job-card * {
-  word-break: break-word;
-  white-space: normal;
-}
-
-/* Job title styling inside cards */
-.job-card span.job-title {
-  color: #5C6BC0;
-  font-size: 1.08rem;
-  font-weight: bold;
-  display: block;
-  border-bottom: 2px solid #5C6BC0;
-  padding-bottom: 6px;
-  margin-bottom: 12px;
-  letter-spacing: 0.5px;
-}
-
-/* Job details section (including notes) */
-.job-details {
-  margin-bottom: 8px;
-  color: #444;
-  font-size: 0.98rem;
-  line-height: 1.5;
-}
-
-/* Button base styles */
-button,
-input[type="submit"] {
-  font-family: inherit;
-  font-size: 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  padding: 10px 18px;
-  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-  outline: none;
-}
-
-button:focus-visible,
-input:focus-visible {
-  outline: 2px solid #5C6BC0;
-  outline-offset: 2px;
-}
-
-/* Add button at the bottom of each column */
-.add-button {
-  position: absolute;
-  bottom: 16px;
-  left: 16px;
-  right: 16px;
-  background: linear-gradient(90deg, #007acc 80%, #5C6BC0 100%);
-  color: #fff;
-  font-weight: 600;
-  font-size: 1rem;
-  box-shadow: 0 2px 8px rgba(92, 107, 192, 0.07);
-}
-
-.add-button:hover,
-.add-button:focus-visible {
-  background: linear-gradient(90deg, #005f99 80%, #3949ab 100%);
-}
-
-/* Submit and Update buttons */
-.submit-button,
-.update-button {
-  background: linear-gradient(90deg, #5C6BC0 80%, #007acc 100%);
-  color: #fff;
-  font-weight: 600;
-  margin-right: 8px;
-}
-
-.submit-button:hover,
-.update-button:hover,
-.submit-button:focus-visible,
-.update-button:focus-visible {
-  background: linear-gradient(90deg, #3949ab 80%, #005f99 100%);
-  outline: 2px solid #5C6BC0;
-  outline-offset: 2px;
-}
-
-/* Edit button */
-.edit-button {
-  background: #0288d1;
-  color: #fff;
-  font-weight: 600;
-  border-radius: 8px;
-}
-
-.edit-button:hover,
-.edit-button:focus-visible {
-  background: #0277bd;
-  outline: 2px solid #5C6BC0;
-  outline-offset: 2px;
-}
-
-/* Cancel button */
-.cancel-button {
-  background: #e0e0e0;
-  color: #555;
-  font-weight: 500;
-  border-radius: 8px;
-}
-
-.cancel-button:hover,
-.cancel-button:focus-visible {
-  background: #cccccc;
-  color: #333;
-  outline: 2px solid #5C6BC0;
-  outline-offset: 2px;
-}
-
-/* Delete button for job cards */
-.delete-button {
-  background: none;
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  border: none;
-  color: #e53935;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 1.1rem;
-  border-radius: 8px;
-  padding: 4px 8px;
-  transition: color 0.18s, background 0.18s;
-}
-
-.delete-button:hover,
-.delete-button:focus-visible {
-  color: #fff;
-  background: #e53935;
-  outline: 2px solid #5C6BC0;
-  outline-offset: 2px;
-}
-
-/* Input form wrapper */
+/* Input wrappers inside columns */
 .input-wrapper {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-bottom: 10px;
 }
 
-/* Input fields for job forms */
-.job-input,
-input[type="text"],
-input[type="email"],
-textarea {
-  background: #fafafa;
-  color: #212121;
-  padding: 10px 12px;
+.input-wrapper input,
+.input-wrapper textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
   border-radius: 8px;
-  border: 1.5px solid #ccc;
-  font-size: 1rem;
-  transition: border 0.18s;
-  resize: vertical;
+  font-size: 0.95rem;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
 }
 
-.job-input:focus,
-input[type="text"]:focus,
-input[type="email"]:focus,
-textarea:focus {
-  border: 1.5px solid #5C6BC0;
-  background: #f0f4ff;
+.input-wrapper input:focus,
+.input-wrapper textarea:focus {
+  border-color: #5C6BC0;
+  box-shadow: 0 0 0 3px rgba(92, 107, 192, 0.2);
+  outline: none;
 }
 
-/* Drag and drop visual feedback */
-.drag-over {
-  border: 2.5px dashed #5C6BC0 !important;
-  background-color: #e3f2fd !important;
-  box-shadow: 0 0 0 2px #5C6BC0 inset;
+/* Buttons */
+.add-button,
+.submit-button {
+  background: linear-gradient(135deg, #5C6BC0, #007acc);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.3s ease, box-shadow 0.2s ease;
 }
 
-/* Responsive Design */
-@media (max-width: 1100px) {
-  .board {
-    gap: 18px;
-  }
-  .column {
-    width: 95vw;
-    max-width: 500px;
-    min-width: 220px;
-    margin-bottom: 24px;
-  }
+.add-button:hover,
+.submit-button:hover {
+  background: linear-gradient(135deg, #4a59a8, #0060a1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-@media (max-width: 700px) {
-  main {
-    padding: 12px 2vw;
-  }
-  .board {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 14px;
-  }
-  .column {
-    width: 98vw;
-    min-width: 0;
-    padding: 18px 6vw 60px 6vw;
-  }
-}
-
-@media (max-width: 500px) {
-  header {
-    padding: 16px 0 10px 0;
-  }
-  .column {
-    padding: 12px 2vw 54px 2vw;
-  }
-  .add-button {
-    font-size: 0.98rem;
-    padding: 9px 10px;
-  }
-}
-
-/* Accessibility: visually hidden utility */
-.visually-hidden {
-  position: absolute !important;
-  height: 1px; width: 1px;
-  overflow: hidden;
-  clip: rect(1px, 1px, 1px, 1px);
-  white-space: nowrap;
+.add-button:active,
+.submit-button:active {
+  transform: translateY(0);
+  box-shadow: none;
 }
