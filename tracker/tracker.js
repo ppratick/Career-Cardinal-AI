@@ -40,14 +40,10 @@ window.addEventListener('DOMContentLoaded', async() => {
 
 
 // Track the next unique job ID and store the currently dragged job for drag-and-drop
-let nextJobID = 1;
 let draggedJob = { job: null, sourceColumnId: '' };
 
 // Creates a new job card element with display and edit modes
 function createJobCard(job) {
-  if (!job.id) {
-    job.id = nextJobID; // Assign ID if not provided
-  }
 
   // Main job card container
   const card = document.createElement('div');
@@ -258,16 +254,6 @@ document.querySelectorAll('.column-content').forEach(container => {
 });
 
 // -------------------
-// Remove a job from localStorage by job ID and column ID
-// -------------------
-function removeJobLocalStorage(jobID, columnId) {
-  const data = JSON.parse(localStorage.getItem('jobData')) || {};
-  if (!data[columnId]) return;
-  data[columnId] = data[columnId].filter(item => item && item.id !== jobID);
-  localStorage.setItem('jobData', JSON.stringify(data));
-}
-
-// -------------------
 // Toggle the visibility of the Add Job form
 // -------------------
 document.querySelectorAll('.add-button').forEach(button => {
@@ -343,30 +329,3 @@ document.querySelectorAll('.submit-button').forEach(button => {
 
   });
 });
-
-// -------------------
-// Save a job to localStorage under the given column ID
-// -------------------
-function saveJobToLocalStorage(job, columnID) {
-  const data = JSON.parse(localStorage.getItem('jobData')) || {};
-  if (!data[columnID]) {
-    data[columnID] = [];
-  }
-  data[columnID].push(job);
-  localStorage.setItem('jobData', JSON.stringify(data));
-}
-
-// -------------------
-// Update an existing job in localStorage
-// -------------------
-function updateJobInLocalStorage(jobID, columnId, updatedJob) {
-  const data = JSON.parse(localStorage.getItem('jobData')) || {};
-  if (!data[columnId]) {
-    return;
-  }
-  const jobIndex = data[columnId].findIndex(job => job.id === jobID);
-  if (jobIndex !== -1) {
-    data[columnId][jobIndex] = updatedJob;
-    localStorage.setItem('jobData', JSON.stringify(data));
-  }
-}
