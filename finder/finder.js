@@ -34,7 +34,7 @@ async function fetchJobs() {
     displayJobs(sampleJobs);
     console.log(`Successfully loaded ${sampleJobs.length} sample jobs`);
   } catch (error) {
-    console.error('Failed to load jobs: ', error)
+    console.error('Failed to load jobs: ', error);
     showErrorMessage('Failed to load jobs, please try again later');
 
   }
@@ -43,7 +43,7 @@ async function fetchJobs() {
 
 
 function displayJobs(jobs){
-  const container = document.querySelector('.jobs-listings-container');
+  const container = document.querySelector('.job-listings-container');
   container.innerHTML = '';
   if(jobs.length === 0){
     container.innerHTML = `
@@ -61,7 +61,7 @@ function displayJobs(jobs){
   });
 }
 
-function createJobCard(jobCard){
+function createJobCard(job){
   const card = document.createElement('div');
   card.className = 'job-card';
   card.innerHTML = `
@@ -69,7 +69,7 @@ function createJobCard(jobCard){
     <p class = "job-company">${job.company}</p>
     <p class = "job-location">${job.location}</p>
     <p class = "job-type">${job.type}</p>
-    <button class = apply-button> Apply </button> 
+    <button class = "apply-button"> Apply </button> 
   `;
   return card;
 }
@@ -80,7 +80,7 @@ function showErrorMessage(message){
     <div class = "error-message">
       <h3> Oops, something went wrong </h3>
       <p> ${message} </p>
-      <button onClick = "fetchJobs()"> Try Again </button>
+      <button onclick = "fetchJobs()"> Try Again </button>
     </div>
   `;
 }
@@ -106,10 +106,10 @@ function setupSearch(){
   searchInput.addEventListener('input', (e) => {
   const searchTerm = e.target.value.toLowerCase().trim();
   const filteredJobs = allJobs.filter(job => 
-    job.title.toLowerCase().include(searchTerm) ||
-    job.company.toLowerCase().include(searchTerm) ||
-    job.location.toLowerCase().include(searchTerm) ||
-    job.type.toLowerCase().include(searchTerm)
+    job.title.toLowerCase().includes(searchTerm) ||
+    job.company.toLowerCase().includes(searchTerm) ||
+    job.location.toLowerCase().includes(searchTerm) ||
+    job.type.toLowerCase().includes(searchTerm)
   );
   displayJobs(filteredJobs);
   });
