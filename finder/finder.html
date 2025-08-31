@@ -1,45 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Pathfinder - Career Compass</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pathfinder - Job Finder</title>
   <link rel="stylesheet" href="finder.css">
 </head>
-
- <main>
+<body>
+  <main>
+    <!-- Search + Filter Section -->
     <section class="board">
-<div class="search-bar-container">
-  <input type="text" id="searchInput" placeholder="Search jobs..." />
-  <button class="filter-button" onclick="toggleFilters()">Filters</button>
-</div>
-  <div class="filter-panel" id="filterPanel">
-    <label>
-      Job Type:
-      <select>
-        <option value="">Any</option>
-        <option value="full-time">Full-time</option>
-        <option value="part-time">Part-time</option>
-        <option value="internship">Internship</option>
-      </select>
-    </label>
+      <div class="search-bar-container">
+        <input type="text" id="searchInput" placeholder="Search jobs..." />
+        <button class="filter-button" onclick="toggleFilters()">Filters</button>
+      </div>
+      <div class="filter-panel" id="filterPanel">
+        <label>
+          Job Type:
+          <select>
+            <option value="">Any</option>
+            <option value="full-time">Full-time</option>
+            <option value="part-time">Part-time</option>
+            <option value="internship">Internship</option>
+          </select>
+        </label>
 
-    <label>
-      Location:
-      <input type="text" placeholder="Enter city or remote">
-    </label>
+        <label>
+          Location:
+          <input type="text" placeholder="Enter city or remote">
+        </label>
 
-    <label>
-      Company:
-      <input type="text" placeholder="Company name">
-    </label>
+        <label>
+          Company:
+          <input type="text" placeholder="Company name">
+        </label>
 
-    <button class="apply-filters">Apply Filters</button>
-  </div>
+        <button class="apply-filters">Apply Filters</button>
+      </div>
     </section>
+
+    <!-- Job Listings Section -->
     <section class="job-listings-section">
-  <h2>Top Job Listings</h2>
+      <h2>Top Job Listings</h2>
+      <div class="job-listings-container"></div>
+    </section>
 
-  <div class="job-listings-container"></div>
-</section>
+    <!-- Resume Upload + AI Suggestions Section -->
+    <section class="resume-upload-section">
+      <h2>Upload Your Resume</h2>
+      <p class="resume-subtext">Get job recommendations tailored to your skills</p>
+      
+      <form id="resumeForm" class="resume-form">
+        <input type="file" id="resumeFile" accept=".pdf,.doc,.docx" required />
+        <button type="submit">Get Suggestions</button>
+      </form>
 
-</main>
-<script src="finder.js"></script>
+      <div id="suggested-jobs" class="suggested-jobs">
+        <h3>Suggested Jobs</h3>
+        <p class="placeholder-text">Upload your resume to see tailored job suggestions here.</p>
+      </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="map-section">
+      <h2>Job Locations</h2>
+      <div id="map"></div>
+    </section>
+  </main>
+
+  <script src="finder.js"></script>
+</body>
+</html>

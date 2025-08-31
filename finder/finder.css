@@ -180,3 +180,117 @@ body {
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
+
+.map-section {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.08);
+}
+
+.map-section h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+#map {
+  width: 100%;
+  height: 400px;
+  border-radius: 10px;
+  background-color: #E0E0E0; /* placeholder background */
+}
+
+/* Resume Upload Section */
+.resume-upload-section {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  padding: 24px;
+  margin: 20px auto;
+  max-width: 600px;
+  text-align: center;
+}
+
+.resume-upload-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+  color: #222;
+}
+
+.resume-subtext {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+/* Resume form */
+.resume-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.resume-form input[type="file"] {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.resume-form button {
+  background: #2563eb; /* blue */
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.resume-form button:hover {
+  background: #1d4ed8;
+}
+
+/* Suggested Jobs Area */
+.suggested-jobs {
+  text-align: left;
+  margin-top: 20px;
+}
+
+.suggested-jobs h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.placeholder-text {
+  font-size: 0.9rem;
+  color: #666;
+  font-style: italic;
+}
+
+
+.resume-upload-container button.upload-button {
+  background-color: #FF6F61;  /* matches job title accent color */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.resume-upload-container button.upload-button:hover {
+  background-color: #e65b50;
+  transform: translateY(-2px); /* subtle hover lift effect */
+}
+
+.resume-upload-container button.upload-button:active {
+  transform: translateY(0); /* press effect */
+}
