@@ -1,7 +1,7 @@
 let allJobs = [];
 
 async function fetchJobs() {
-  showLoadingMessage(); //add this later
+  showLoadingMessage();
   try {
     const sampleJobs = [
       {
@@ -40,6 +40,8 @@ async function fetchJobs() {
   }
 }
 
+
+
 function displayJobs(jobs){
   const container = document.querySelector('.jobs-listings-container');
   container.innerHTML = '';
@@ -54,7 +56,7 @@ function displayJobs(jobs){
   }
 
   jobs.forEach(job => {
-    const jobCard = createJobCard(job); //add createJobCard
+    const jobCard = createJobCard(job);
     container.appendChild(jobCard);
   });
 }
@@ -70,6 +72,47 @@ function createJobCard(jobCard){
     <button class = apply-button> Apply </button> 
   `;
   return card;
+}
+
+function showErrorMessage(message){
+  const container = document.querySelector('.job-listings-container');
+  container.innerHTML = `
+    <div class = "error-message">
+      <h3> Oops, something went wrong </h3>
+      <p> ${message} </p>
+      <button onClick = "fetchJobs()"> Try Again </button>
+    </div>
+  `;
+}
+
+function showLoadingMessage(){
+  const container = document.querySelector('.job-listings-container');
+    container.innerHTML = `
+    <div class = "loading-message">
+      <h3> Loading jobs... </h3>
+      <p> Please wait while we fetch the latest job listings. </p>
+    </div>
+  `;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  console.log("Loaded job finder");
+  setupSearch();
+  fetchJobs();
+});
+
+function setupSearch(){
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('input', (e) => {
+  const searchTerm = e.target.value.toLowerCase().trim();
+  const filteredJobs = allJobs.filter(job => 
+    job.title.toLowerCase().include(searchTerm) ||
+    job.company.toLowerCase().include(searchTerm) ||
+    job.location.toLowerCase().include(searchTerm) ||
+    job.type.toLowerCase().include(searchTerm)
+  );
+  displayJobs(filteredJobs);
+  });
 }
 
 function toggleFilters() {
