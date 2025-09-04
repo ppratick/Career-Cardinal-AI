@@ -125,3 +125,9 @@ const filterButton = document.createElement('button');
   filterButton.addEventListener('click', () => {
     toggleFilters();
   });
+
+  async function fetchAPIJOBS(query = 'developer jobs in Chicago', page = 1) {
+    try{
+      const url = `${JSEARCH_BASE_URL}/search?query=${encodeURIComponent(query)}&page=${page}&num_pages=1&country=us&date_posted=all`;
+    }
+  };

@@ -1,11 +1,15 @@
+require('dotenv').config();
+
 // Load required libraries
 const express = require('express');
 const cors = require('cors');
 const sqlite3 = require('sqlite3').verbose();
 
+const fetch = require('node-fetch');
+
 // Setup Express app
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
@@ -20,6 +24,10 @@ const db = new sqlite3.Database('jobs.db', (err) => {
     }
 });
 
+JSEARCH_API_KEY = process.env.JSEARCH_API_KEY;
+JSEARCH_BASE_URL = process.env.JSEARCH_BASE_URL || 'https://jsearch.p.rapidapi.com';
+
+
 // Create jobs table if it doesn't exist 
 db.run(`
     CREATE TABLE IF NOT EXISTS jobs (
@@ -30,6 +38,26 @@ db.run(`
         link TEXT,
         notes TEXT,
         status TEXT DEFAULT 'saved'
+    )
+`);
+
+db.run(`
+    CREATE TABLE IF NOT EXISTS job_listings (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        job_id TEXT UNIQUE,
+        title TEXT,
+        company TEXT,
+        location TEXT,
+        employment_type TEXT,
+        description TEXT,
+        apply_link TEXT,
+        is_remote BOOLEAN,
+        posted_date TEXT,
+        salary_min INTEGER,
+        salary_max INTEGER,
+        salary_currency TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+
     )
 `);
 
