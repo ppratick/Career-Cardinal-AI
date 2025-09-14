@@ -1,46 +1,27 @@
 let allJobs = [];
+const API_BASE = 'http://localhost:3000';
 
-async function fetchJobs() {
+async function fetchJobs(query = '', page = 1) {
   showLoadingMessage();
-  try {
-    const sampleJobs = [
-      {
-        id: 1, 
-        title: 'Frontend Developer',
-        company: 'Google',
-        location: 'San Francisco, CA',
-        type: 'Full time',
-        desc: '40 minutes away'
-      },
-      {
-        id: 2, 
-        title: 'Backend Developer',
-        company: 'Apple',
-        location: 'Myrtle Beach, VA',
-        type: 'Full time',
-        desc: '40 minutes away'
-      },
-      {
-        id: 3, 
-        title: 'Middleend Developer',
-        company: 'Apple',
-        location: 'M',
-        type: 'Full time',
-        desc: '40 minutes away'
-      }
-    ];
+  try{
+    // Ternary (condition ? A : B)
+    const qParam = query ? `?q=${encodeURIComponent(query)}&limit=50&offset=${(page-1)*50}` : `?limit=50&offset=${(page-1)*50})`;
+    const resp = await fetch(`${API_BASE}/api/jobs${qParam}`);
+    if (!resp.ok){
+      throw new Error(`API error ${resp.status}`)
+    }
 
-    allJobs = sampleJobs;
-    displayJobs(sampleJobs);
-    console.log(`Successfully loaded ${sampleJobs.length} sample jobs`);
-  } catch (error) {
-    console.error('Failed to load jobs: ', error);
-    showErrorMessage('Failed to load jobs, please try again later');
-
+    const data = await resp.json();
+    const jobs = Array.isArray(data.jobs) ? data.jobs : [];
+    allJobs = jobs;
+    displayJobs(jobs);
+    console.log(`loaded ${jobs.length} jobs for query: ${query || '(all)'}`);
+  } catch (error){
+    console.error('Failed to load job:', error);
+      alert('Failed to load jobs, please try again'); 
+    showErrorMessage(error.message);
   }
 }
-
-
 
 function displayJobs(jobs){
   const container = document.querySelector('.job-listings-container');
@@ -65,14 +46,24 @@ function createJobCard(job){
   const card = document.createElement('div');
   card.className = 'job-card';
   card.innerHTML = `
-    <h3 class = "job-title">${job.title}</h3>
-    <p class = "job-company">${job.company}</p>
-    <p class = "job-location">${job.location}</p>
-    <p class = "job-type">${job.type}</p>
-    <button class = "apply-button"> Apply </button> 
+    <h3 class = "job-title">${job.title || ''}</h3> 
+    <p class = "job-company">${job.company || ''}</p>
+    <p class = "job-location">${job.location || ''}</p>
+    <p class = "job-type">${job.employment_type || job.type || ''}</p>
+    <button class = "apply-button" ${job.apply_link ? '' : 'disabled'}> Apply </button> 
   `;
+
+  const applyBtn = card.querySelector('.apply-button');
+  if (job.applied_link) {
+    applyBtn.addEventListener('click', () =>{
+      window.open(job.apply_link, '_blank');
+    });
+  }
+
   return card;
 }
+
+
 
 function showErrorMessage(message){
   const container = document.querySelector('.job-listings-container');
@@ -98,20 +89,22 @@ function showLoadingMessage(){
 document.addEventListener('DOMContentLoaded', () => {
   console.log("Loaded job finder");
   setupSearch();
-  fetchJobs();
+  fetchJobs('');
 });
 
 function setupSearch(){
   const searchInput = document.getElementById('searchInput');
+  const debounced  = debounce((term) => {
+    fetchJobs(term, 1);
+  }, 400);
   searchInput.addEventListener('input', (e) => {
-  const searchTerm = e.target.value.toLowerCase().trim();
-  const filteredJobs = allJobs.filter(job => 
-    job.title.toLowerCase().includes(searchTerm) ||
-    job.company.toLowerCase().includes(searchTerm) ||
-    job.location.toLowerCase().includes(searchTerm) ||
-    job.type.toLowerCase().includes(searchTerm)
-  );
-  displayJobs(filteredJobs);
+  const searchTerm = e.target.value;
+  const trimmed = searchTerm.trim();
+  if (trimmed.length === 0) {
+    fetchJobs('', 1);
+  } else{
+    debounced(trimmed);
+  }
   });
 }
 
@@ -127,7 +120,20 @@ const filterButton = document.createElement('button');
   });
 
   async function fetchAPIJOBS(query = 'developer jobs in Chicago', page = 1) {
-    try{
-      const url = `${JSEARCH_BASE_URL}/search?query=${encodeURIComponent(query)}&page=${page}&num_pages=1&country=us&date_posted=all`;
-    }
+    return fetchJobs(query, page);
   };
+
+  function debounce(fn, delay){
+    let t;
+    return function(...args) {
+      clearTimeout(t);
+      t = setTimeout(() => fn.apply(this, args), delay);
+    };
+  }
+
+const hamburger = document.getElementById('hamburgerToggle');
+const navBar = document.getElementById('nav-bar');
+hamburger.addEventListener('click', () => {
+  navBar.classList.toggle('is-active');
+});
+
