@@ -1,24 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- The lang attribute helps screen readers and browsers know what language the page is in -->
 <head>
-  <meta charset="UTF-8">
+  <!-- Meta tags provide information about the webpage to browsers -->
+  <meta charset="UTF-8"> <!-- Defines the character encoding (how text is stored) -->
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Pathfinder - Job Finder</title>
-  <link rel="stylesheet" href="finder.css">
+  <!-- Viewport meta tag helps with mobile responsiveness - makes the page look good on phones -->
+  
+  <title>Pathfinder - Job Finder</title> <!-- Shows up in browser tab -->
+  <link rel="stylesheet" href="finder.css"> <!-- Connects our CSS file for styling -->
 </head>
+
 <body>
-  <button id="hamburgerToggle">☰</button>
+    <!-- Navigation Menu -->
+    <!-- Hamburger menu button (☰) for mobile devices -->
+    <nav class="navigation">
+    <button id="hamburgerToggle" aria-label="Toggle menu">☰</button>
     <div id="nav-bar">
-      <a href="../tracker/tracker.html" class="nav-button">Job Tracker</a>
+        <a href="../tracker/tracker.html" class="nav-button">Job Tracker</a>
     </div>
-  <main>
-    <!-- Search + Filter Section -->
+</nav>
+
+  <main> <!-- Main content wrapper -->
+    <!-- Search and Filter Section -->
     <section class="board">
+      <!-- Search bar container with input and filter button -->
       <div class="search-bar-container">
         <input type="text" id="searchInput" placeholder="Search jobs..." />
+        <!-- Filter button that shows/hides filter options when clicked -->
         <button class="filter-button" onclick="toggleFilters()">Filters</button>
       </div>
+
+      <!-- Filter panel with job search options -->
       <div class="filter-panel" id="filterPanel">
+        <!-- Job Type dropdown menu -->
         <label>
           Job Type:
           <select>
@@ -29,49 +44,59 @@
           </select>
         </label>
 
+        <!-- Location input field -->
         <label>
           Location:
           <input type="text" placeholder="Enter city or remote">
         </label>
 
+        <!-- Company name input field -->
         <label>
           Company:
           <input type="text" placeholder="Company name">
         </label>
 
+        <!-- Button to apply selected filters -->
         <button class="apply-filters">Apply Filters</button>
       </div>
     </section>
 
-    <!-- Job Listings Section -->
+    <!-- Section where job listings will appear -->
     <section class="job-listings-section">
       <h2>Top Job Listings</h2>
+      <!-- Container where JavaScript will add job cards -->
       <div class="job-listings-container"></div>
     </section>
 
-    <!-- Resume Upload + AI Suggestions Section -->
+    <!-- Resume Upload Section with AI Job Matching -->
     <section class="resume-upload-section">
       <h2>Upload Your Resume</h2>
       <p class="resume-subtext">Get job recommendations tailored to your skills</p>
       
+      <!-- Resume upload form -->
       <form id="resumeForm" class="resume-form">
+        <!-- File input that only accepts document files -->
         <input type="file" id="resumeFile" accept=".pdf,.doc,.docx" required />
         <button type="submit">Get Suggestions</button>
       </form>
 
+      <!-- Container for AI-suggested jobs -->
       <div id="suggested-jobs" class="suggested-jobs">
         <h3>Suggested Jobs</h3>
         <p class="placeholder-text">Upload your resume to see tailored job suggestions here.</p>
       </div>
     </section>
 
-    <!-- Map Section -->
+    <!-- Map Section to show job locations -->
     <section class="map-section">
       <h2>Job Locations</h2>
+      <!-- Container where the map will be displayed -->
       <div id="map"></div>
     </section>
   </main>
 
+  <!-- Connects our JavaScript file -->
+  <!-- Placed at the bottom so the page loads faster -->
   <script src="finder.js"></script>
 </body>
 </html>

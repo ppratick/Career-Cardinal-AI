@@ -1,362 +1,415 @@
 /* === JOB FINDER PAGE CSS === */
+/* Base styles for the whole page */
+/* This sets up how text looks and the background color for the entire website */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #F4F6F8;
-  margin: 0;
-  padding: 0;
-  color: #212121;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Sets the text font */
+    background-color: #F4F6F8; /* Light gray background */
+    margin: 0; /* Removes default spacing around the page */
+    padding: 0;
+    color: #212121; /* Dark gray text color */
 }
 
-/* Search Bar + Filter */
+/* Search Bar Section */
+/* This creates a centered container for the search bar and filter button */
 .search-bar-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  padding: 30px 20px;
-  flex-wrap: wrap;
+    display: flex; /* Makes items sit side by side */
+    justify-content: center; /* Centers items horizontally */
+    align-items: center; /* Centers items vertically */
+    gap: 12px; /* Space between items */
+    padding: 30px 20px;
+    flex-wrap: wrap; /* Allows items to wrap on small screens */
 }
 
+/* Search Input Field */
+/* Styles the main search box where users type job queries */
 #searchInput {
-  padding: 10px 16px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  width: 300px;
-  max-width: 100%;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 10px 16px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px; /* Rounds the corners */
+    width: 300px;
+    max-width: 100%; /* Prevents overflow on mobile */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Subtle shadow effect */
 }
 
+/* Filter Button */
+/* Styles the button used to apply filters to the job search */
 .filter-button {
-  padding: 10px 16px;
-  background-color: #5C6BC0;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+    padding: 10px 16px;
+    background-color: #5C6BC0;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
+/* Filter button hover effect */
 .filter-button:hover {
-  background-color: #4051b5;
+    background-color: #4051b5;
 }
 
 /* Job Listings Section */
+/* Main area where job postings are displayed */
 .job-listings-section {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
+/* Job Listings title */
 .job-listings-section h2 {
-  font-size: 28px;
-  margin-bottom: 24px;
-  color: #333;
+    font-size: 28px;
+    margin-bottom: 24px;
+    color: #333;
 }
 
 /* Grid Layout */
+/* Creates a responsive grid layout for job cards */
 .job-listings-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Makes cards responsive */
+    gap: 20px; /* Space between cards */
 }
 
-/* Job Card */
+/* Individual Job Card */
+/* Styles each job posting card */
 .job-card {
-  background-color: white;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease;
-  border-color: #FAFAFA;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.08); /* Card shadow */
+    transition: transform 0.2s ease; /* Smooth hover animation */
+    border-color: #FAFAFA;
 }
 
+/* Card hover effect */
 .job-card:hover {
-  transform: translateY(-4px);
+    transform: translateY(-4px); /* Lifts card slightly when hovered */
 }
 
+/* Job Title in Cards */
 .job-title {
-  margin: 0 0 8px;
-  font-size: 20px;
-  color: #FF6F61;
-  font-weight: 600;
+    margin: 0 0 8px;
+    font-size: 20px;
+    color: #FF6F61; /* Coral color for emphasis */
+    font-weight: 600;
 }
 
+/* Common styles for job details like company, location, and type */
 .company, .location, .type {
-  margin: 2px 0;
-  color: #666;
-  font-size: 14px;
+    margin: 2px 0;
+    color: #666;
+    font-size: 14px;
 }
 
+/* Apply Button */
+/* The button that lets users apply for a job directly from the listing */
 .apply-button {
-  margin-top: 12px;
-  background-color: #5C6BC0;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
+    margin-top: 12px;
+    background-color: #5C6BC0;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
 }
 
+/* Apply button hover effect */
 .apply-button:hover {
-  background-color: #4051b5;
+    background-color: #4051b5;
 }
 
-/* Filter panel */
+/* Filter Panel */
+/* Hidden by default, shows when filter button is clicked */
 .filter-panel {
-  display: none;
-  flex-direction: column;
-  gap: 10px;
-  background-color: #fff;
-  padding: 15px;
-  margin: 10px auto;
-  max-width: 800px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  animation: fadeIn 0.3s ease;
+    display: none; /* Hidden initially */
+    flex-direction: column;
+    gap: 10px;
+    background-color: #fff;
+    padding: 15px;
+    margin: 10px auto;
+    max-width: 800px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    animation: fadeIn 0.3s ease; /* Smooth appearance animation */
 }
 
+/* Filter panel label styles */
 .filter-panel label {
-  font-size: 14px;
-  color: #333;
+    font-size: 14px;
+    color: #333;
 }
 
+/* Filter panel input and select styles */
 .filter-panel input,
 .filter-panel select {
-  padding: 8px 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 100%;
 }
 
+/* Apply Filters Button */
+/* The button that applies the selected filters to the job search */
 .apply-filters {
-  background-color: #5C6BC0;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
+    background-color: #5C6BC0;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
 }
 
+/* Apply filters button hover effect */
 .apply-filters:hover {
-  background-color: #4051b5;
+    background-color: #4051b5;
 }
 
 /* Simple fade-in animation */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
+/* Messages for loading, no jobs found, or errors */
 .loading-message, .no-jobs-message, .error-message {
-  text-align: center;
-  padding: 14px 8px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.08);
-  grid-column: 1 / -1;
+    text-align: center;
+    padding: 14px 8px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.08);
+    grid-column: 1 / -1;
 }
 
+/* Message headings */
 .loading-message h3, .error-message h3, .no-jobs-message h3 {
-  color: #333;
-  margin-bottom: 10px;
+    color: #333;
+    margin-bottom: 10px;
 }
 
+/* Message paragraphs */
 .loading-message p, .error-message p, .no-jobs-message p {
-  color: #666;
-  margin-bottom: 20px;
+    color: #666;
+    margin-bottom: 20px;
 }
 
+/* Error message button */
 .error-message button {
-  padding: 5px 8px;
-  background-color: #5C6BC0;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+    padding: 5px 8px;
+    background-color: #5C6BC0;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
+/* Map Section */
+/* Displays a map for job locations (if applicable) */
 .map-section {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 40px auto;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 1px 8px rgba(0,0,0,0.08);
+    padding: 20px;
+    max-width: 1200px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.08);
 }
 
+/* Map section title */
 .map-section h2 {
-  font-size: 24px;
-  margin-bottom: 16px;
-  color: #333;
+    font-size: 24px;
+    margin-bottom: 16px;
+    color: #333;
 }
 
+/* Placeholder for the map */
 #map {
-  width: 100%;
-  height: 400px;
-  border-radius: 10px;
-  background-color: #E0E0E0; /* placeholder background */
+    width: 100%;
+    height: 400px;
+    border-radius: 10px;
+    background-color: #E0E0E0; /* placeholder background */
 }
 
 /* Resume Upload Section */
+/* Styles the area where users can upload their resume */
 .resume-upload-section {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-  padding: 24px;
-  margin: 20px auto;
-  max-width: 600px;
-  text-align: center;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    padding: 24px;
+    margin: 20px auto;
+    max-width: 600px;
+    text-align: center;
 }
 
+/* Resume upload title */
 .resume-upload-section h2 {
-  font-size: 1.5rem;
-  margin-bottom: 8px;
-  color: #222;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    color: #222;
 }
 
+/* Subtext under the title in resume upload section */
 .resume-subtext {
-  font-size: 0.95rem;
-  color: #555;
-  margin-bottom: 20px;
+    font-size: 0.95rem;
+    color: #555;
+    margin-bottom: 20px;
 }
 
 /* Resume form */
+/* The form used to upload resumes */
 .resume-form {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
 }
 
+/* File input in resume form */
 .resume-form input[type="file"] {
-  padding: 6px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  cursor: pointer;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
+/* Submit button in resume form */
 .resume-form button {
-  background: #2563eb; /* blue */
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: background 0.2s;
+    background: #2563eb; /* blue */
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
+/* Submit button hover effect */
 .resume-form button:hover {
-  background: #1d4ed8;
+    background: #1d4ed8;
 }
 
 /* Suggested Jobs Area */
+/* Section that shows job recommendations to the user */
 .suggested-jobs {
-  text-align: left;
-  margin-top: 20px;
+    text-align: left;
+    margin-top: 20px;
 }
 
+/* Suggested jobs title */
 .suggested-jobs h3 {
-  font-size: 1.2rem;
-  margin-bottom: 10px;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
 }
 
+/* Placeholder text in suggested jobs area */
 .placeholder-text {
-  font-size: 0.9rem;
-  color: #666;
-  font-style: italic;
+    font-size: 0.9rem;
+    color: #666;
+    font-style: italic;
 }
 
-
+/* Upload button in resume upload container */
 .resume-upload-container button.upload-button {
-  background-color: #FF6F61;  /* matches job title accent color */
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 12px 24px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+    background-color: #FF6F61;  /* matches job title accent color */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
+/* Upload button hover effect */
 .resume-upload-container button.upload-button:hover {
-  background-color: #e65b50;
-  transform: translateY(-2px); /* subtle hover lift effect */
+    background-color: #e65b50;
+    transform: translateY(-2px); /* subtle hover lift effect */
 }
 
+/* Upload button active effect */
 .resume-upload-container button.upload-button:active {
-  transform: translateY(0); /* press effect */
+    transform: translateY(0); /* press effect */
 }
 
 /* Page Navigation */
+/* Navigation controls for paginated job listings */
 .page-nav {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  padding: 15px;
-  background-color: #ffffff;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
-  margin-bottom: 20px;
-  border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 15px;
+    background-color: #ffffff;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+    border-radius: 8px;
 }
 
+/* Navigation button styles */
+.nav-button {
+    display: block;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    background-color: #5C6BC0;
+    color: white;
+    bottom: 100px;
+    padding: 10px 0;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    bottom: 100px;
+}
+
+/* Navigation button hover effect */
+.nav-button:hover {
+    background-color: #4051b5;
+}
+
+/* Sliding side menu for mobile navigation */
 #nav-bar {
-  position: fixed;
-  top: 0;
-  left: -270px;   /* hidden initially */
-  width: 220px;
-  height: 100%;
-  background: #fff;
-  padding: 3rem 1rem;
-  box-shadow: 2px 0 6px rgba(0,0,0,0.2);
-  transition: left 0.3s ease;
-  z-index: 1000;
+    position: fixed; /* Stays in place while scrolling */
+    top: 0;
+    left: -300px; /* Start off-screen */
+    width: 250px;
+    height: 100vh;
+    background: #fff;
+    padding: 2rem 1rem;
+    box-shadow: 2px 0 6px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+    z-index: 1000; /* Appears above other content */
 }
 
-#nav-bar.show {
-  left: 0;        /* slide in */
+/* When nav menu is active */
+#nav-bar.is-active {
+    transform: translateX(300px); /* Slide in when active */
 }
 
 /* Optional styling for the button */
 #hamburgerToggle {
-  position: fixed;
-  top: 12px;
-  left: 12px;
-  background-color: #5C6BC0;
-  color: white;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 6px;
-  font-size: 20px;
-  cursor: pointer;
-  z-index: 1001;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1001;
+    background-color: #5C6BC0;
+    color: white;
+    border: none;
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
+/* Hamburger menu button hover effect */
 #hamburgerToggle:hover {
-  background-color: #4051b5;
-}
-
-.nav-button {
-  display: block;
-  width: 100%;
-  text-align: center;
-  text-decoration: none;
-  background-color: #5C6BC0;
-  color: white;
-  padding: 10px 0;
-  border-radius: 6px;
-  margin-bottom: 10px;
-}
-
-.nav-button:hover {
-  background-color: #4051b5;
+    background-color: #4051b5;
 }
 
 

@@ -329,3 +329,25 @@ document.querySelectorAll('.submit-button').forEach(button => {
 
   });
 });
+// Get the menu elements
+const hamburgerBtn = document.getElementById('hamburgerToggle');
+const navBar = document.getElementById('nav-bar');
+
+// Toggle menu when hamburger is clicked
+hamburgerBtn.addEventListener('click', () => {
+    navBar.classList.toggle('is-active');
+});
+
+// Close menu when clicking outside
+document.addEventListener('click', (e) => {
+    if (!navBar.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+        navBar.classList.remove('is-active');
+    }
+});
+
+// Close menu when escape key is pressed
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        navBar.classList.remove('is-active');
+    }
+});

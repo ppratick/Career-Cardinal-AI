@@ -1,21 +1,22 @@
+// Load environment variables from a .env file into process.env
 require('dotenv').config();
 
-// Load required libraries
-const express = require('express');
-const cors = require('cors');
-const sqlite3 = require('sqlite3').verbose();
+// Import necessary packages (like ingredients for our recipe)
+const express = require('express');  // Framework to build our web server
+const cors = require('cors');        // Allows our frontend to talk to our backend safely
+const sqlite3 = require('sqlite3').verbose();  // Database to store our jobs
+const fetch = require('node-fetch');  // Helps us fetch data from other websites (like JSearch API)
 
-const fetch = require('node-fetch');
-
-// Setup Express app
+// Create our web server application
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;  // Which door (port) our server will listen on
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// Tell our server to:
+app.use(cors());         // Allow web browsers to communicate with our API
+app.use(express.json()); // Understand JSON data sent to it
 
-// Connect to database or create one if not found
+// Connect to our database (or create it if it doesn't exist)
+// Think of this like opening a filing cabinet for our job data
 const db = new sqlite3.Database('jobs.db', (err) => {
     if (err) {
         console.error('DB error:', err.message);
@@ -24,15 +25,18 @@ const db = new sqlite3.Database('jobs.db', (err) => {
     }
 });
 
+// Get our JSearch API key from environment variables
+// This is like our special password to use the job search service
 const JSEARCH_API_KEY = process.env.JSEARCH_API_KEY;
 const JSEARCH_BASE_URL = process.env.JSEARCH_BASE_URL || 'https://jsearch.p.rapidapi.com';
 
+// Warn us if we're missing our API key
 if (!JSEARCH_API_KEY) {
     console.warn('Warning: JSEARCH_API_KEY is not set. Job search functionality will be disabled.');
 }
 
-
-// Create jobs table if it doesn't exist 
+// Create our main jobs table if it doesn't exist yet
+// This is like creating sections in our filing cabinet
 db.run(`
     CREATE TABLE IF NOT EXISTS jobs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,6 +49,8 @@ db.run(`
     )
 `);
 
+// Convert JSearch job data into our database format
+// Like translating from one language to another
 function mapJSearchJobToDB(job){
     return {
         job_id: job.job_id,
@@ -62,6 +68,8 @@ function mapJSearchJobToDB(job){
     };
 }
 
+// Save or update a job in our database
+// If the job exists, update it; if it's new, add it
 function upsertJobListing(db, row){
     return new Promise((resolve, reject) => {
         const sql = `
@@ -108,6 +116,8 @@ function upsertJobListing(db, row){
     });
 }
 
+// ROUTE 1: Search for jobs using JSearch API
+// When someone visits /api/jobs/search, this code runs
 app.get('/api/jobs/search', async (req, res) => {
     try{
         const query = (req.query.query || '').toString();
@@ -157,6 +167,8 @@ app.get('/api/jobs/search', async (req, res) => {
     }
 });
 
+// ROUTE 2: Get jobs from our database
+// When someone visits /api/jobs, this code runs
 app.get('/api/jobs', (req, res) =>{
     const q = (req.query.q || '').toString().trim();
     const limit = Math.min(parseInt(req.query.limit, 10) || 50, 100); 
@@ -182,7 +194,8 @@ app.get('/api/jobs', (req, res) =>{
     });
 });
 
-
+// Create our job_listings table if it doesn't exist
+// This table stores more detailed information about each job
 db.run(`
     CREATE TABLE IF NOT EXISTS job_listings (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -203,9 +216,8 @@ db.run(`
     )
 `);
 
-
-
-// GET all jobs 
+// ROUTE 3: Get all saved jobs
+// Returns every job in our database
 app.get('/jobs', (req, res) => {
     db.all('SELECT * FROM jobs', [], (err, rows) => {
         if (err) {
@@ -216,7 +228,8 @@ app.get('/jobs', (req, res) => {
     });
 } );
 
-// POST a new job
+// ROUTE 4: Save a new job
+// Adds a new job to our database
 app.post('/jobs', (req, res) => {
     const {title, company, date, link, notes, status} = req.body;
     const query = 'INSERT INTO jobs (title, company, date, link, notes, status) VALUES (?, ?, ?, ?, ?, ?)';
@@ -229,7 +242,8 @@ app.post('/jobs', (req, res) => {
     });
 });
 
-// PUT update job
+// ROUTE 5: Update an existing job
+// Changes information about a job we already have
 app.put('/jobs/:id', (req, res) =>{
     const jobID = req.params.id;
     const {title, company, date, link, notes, status} = req.body;
@@ -243,7 +257,8 @@ app.put('/jobs/:id', (req, res) =>{
     });
 });
 
-// DELETE job
+// ROUTE 6: Delete a job
+// Removes a job from our database
 app.delete('/jobs/:id', (req, res) =>{
     const jobID = req.params.id;
     db.run('DELETE FROM jobs WHERE id = ?', [jobID], function(err){
@@ -255,12 +270,12 @@ app.delete('/jobs/:id', (req, res) =>{
     })
 }); 
 
-// Test route
+// Test route to check if server is running
 app.get('/', (req, res) => {
     res.send('Backend is running!');
 });
 
-// Start server
+// Start our server and listen for requests
 app.listen(PORT, () => {
     console.log(`Server started at http://localhost:${PORT}`);
 });
