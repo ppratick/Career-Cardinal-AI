@@ -34,74 +34,93 @@
       <!-- Filter panel with job search options -->
       <div class="filter-panel" id="filterPanel">
         <div class="filter-group">
-          <label for="jobType">Job Type:</label>
-          <select id="jobType" name="jobType">
-            <option value="">All Types</option>
-            <option value="full_time">Full-time</option>
-            <option value="part_time">Part-time</option>
-            <option value="contract">Contract</option>
-            <option value="internship">Internship</option>
-          </select>
+            <label for="jobType">Job Type:</label>
+            <select id="jobType" name="jobType">
+                <option value="">All Types</option>
+                <option value="full_time">Full-time</option>
+                <option value="part_time">Part-time</option>
+                <option value="contract">Contract</option>
+                <option value="internship">Internship</option>
+            </select>
         </div>
 
         <div class="filter-group">
-          <label for="location">Location:</label>
-          <input type="text" id="location" name="location" placeholder="City or Remote">
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" placeholder="City or Remote">
         </div>
 
         <div class="filter-group">
-          <label for="experience">Experience Level:</label>
-          <select id="experience" name="experience">
-            <option value="">All Levels</option>
-            <option value="entry">Entry Level</option>
-            <option value="mid">Mid Level</option>
-            <option value="senior">Senior Level</option>
-          </select>
+            <label for="experience">Experience Level:</label>
+            <select id="experience" name="experience">
+                <option value="">All Levels</option>
+                <option value="entry">Entry Level</option>
+                <option value="mid">Mid Level</option>
+                <option value="senior">Senior Level</option>
+            </select>
         </div>
 
         <div class="filter-group">
-          <label for="salary">Minimum Salary:</label>
-          <input type="number" id="salary" name="salary" placeholder="Minimum yearly salary">
+            <label for="salary">Minimum Salary:</label>
+            <input type="number" id="salary" name="salary" placeholder="Minimum yearly salary">
         </div>
 
         <div class="filter-actions">
-          <button class="apply-filters" id="applyFilters">Apply Filters</button>
-          <button class="clear-filters" id="clearFilters">Clear All</button>
+            <button class="apply-filters" id="applyFilters">Apply Filters</button>
+            <button class="clear-filters" id="clearFilters">Clear All</button>
+        </div>
+    </div>
+    </section>
+
+    <!-- Tabs Section for Job Listings, Resume Match, and Job Map -->
+    <section class="tabs-section">
+      <!-- Tab Navigation -->
+      <div class="tab-navigation">
+        <button class="tab-button active" data-tab="jobs">Job Listings</button>
+        <button class="tab-button" data-tab="resume">Resume Match</button>
+        <button class="tab-button" data-tab="map">Job Map</button>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="tab-content">
+        <!-- Jobs Tab -->
+        <div id="jobs-tab" class="tab-pane active">
+          <section class="job-listings-section">
+            <h2>Top Job Listings</h2>
+            <!-- Container where JavaScript will add job cards -->
+            <div class="job-listings-container"></div>
+          </section>
+        </div>
+
+        <!-- Resume Tab -->
+        <div id="resume-tab" class="tab-pane">
+          <section class="resume-upload-section">
+            <h2>Upload Your Resume</h2>
+            <p class="resume-subtext">Get job recommendations tailored to your skills</p>
+            
+            <!-- Resume upload form -->
+            <form id="resumeForm" class="resume-form">
+              <!-- File input that only accepts document files -->
+              <input type="file" id="resumeFile" accept=".pdf,.doc,.docx" required />
+              <button type="submit">Get Suggestions</button>
+            </form>
+
+            <!-- Container for AI-suggested jobs -->
+            <div id="suggested-jobs" class="suggested-jobs">
+              <h3>Suggested Jobs</h3>
+              <p class="placeholder-text">Upload your resume to see tailored job suggestions here.</p>
+            </div>
+          </section>
+        </div>
+
+        <!-- Map Tab -->
+        <div id="map-tab" class="tab-pane">
+          <section class="map-section">
+            <h2>Job Locations</h2>
+            <!-- Container where the map will be displayed -->
+            <div id="map"></div>
+          </section>
         </div>
       </div>
-    </section>
-
-    <!-- Section where job listings will appear -->
-    <section class="job-listings-section">
-      <h2>Top Job Listings</h2>
-      <!-- Container where JavaScript will add job cards -->
-      <div class="job-listings-container"></div>
-    </section>
-
-    <!-- Resume Upload Section with AI Job Matching -->
-    <section class="resume-upload-section">
-      <h2>Upload Your Resume</h2>
-      <p class="resume-subtext">Get job recommendations tailored to your skills</p>
-      
-      <!-- Resume upload form -->
-      <form id="resumeForm" class="resume-form">
-        <!-- File input that only accepts document files -->
-        <input type="file" id="resumeFile" accept=".pdf,.doc,.docx" required />
-        <button type="submit">Get Suggestions</button>
-      </form>
-
-      <!-- Container for AI-suggested jobs -->
-      <div id="suggested-jobs" class="suggested-jobs">
-        <h3>Suggested Jobs</h3>
-        <p class="placeholder-text">Upload your resume to see tailored job suggestions here.</p>
-      </div>
-    </section>
-
-    <!-- Map Section to show job locations -->
-    <section class="map-section">
-      <h2>Job Locations</h2>
-      <!-- Container where the map will be displayed -->
-      <div id="map"></div>
     </section>
   </main>
 
