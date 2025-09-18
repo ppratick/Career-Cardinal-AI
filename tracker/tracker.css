@@ -1,4 +1,5 @@
-/* Reset and base styles */
+/* Reset and base styles - Removes default browser styling */
+/* This makes sure our design looks the same in all browsers */
 *,
 *::before,
 *::after {
@@ -7,7 +8,8 @@
   padding: 0;
 }
 
-/* Background with subtle pattern */
+/* Main page background styling */
+/* Creates a subtle gradient background with a dot pattern */
 body {
   font-family: "Segoe UI", Roboto, sans-serif;
   background: linear-gradient(135deg, #f4f6f8, #e8ecf5);
@@ -19,7 +21,8 @@ body {
   flex-direction: column;
 }
 
-/* Header Section */
+/* Header Section - The top part of our page */
+/* Contains the main title and subtitle */
 .site-header {
   text-align: center;
   padding: 40px 20px 20px;
@@ -36,13 +39,15 @@ body {
   margin-bottom: 10px;
 }
 
+/* Subtitle text under the main title */
 .site-header .subtitle {
   font-size: 1.2rem;
   color: #555;
   font-weight: 400;
 }
 
-/* Main board wrapper */
+/* Main content area - Where all our job columns live */
+/* Uses flex to center everything and make it responsive */
 main {
   flex: 1;
   padding: 40px 20px;
@@ -51,7 +56,8 @@ main {
   align-items: flex-start;
 }
 
-/* Glassy board container */
+/* Board container - Holds all the job status columns */
+/* Creates a semi-transparent white background with shadow */
 .board {
   display: flex;
   justify-content: space-evenly;
@@ -66,7 +72,8 @@ main {
   width: 100%;
 }
 
-/* Columns */
+/* Individual column styling - Applied, Interviewing, etc. */
+/* Each column is a white box that lifts up when hovered */
 .column {
   background: #fff;
   border-radius: 16px;
@@ -91,7 +98,8 @@ main {
   margin-bottom: 10px;
 }
 
-/* Job card spacing and border */
+/* Job card - Individual job posting cards within columns */
+/* Cards have a subtle shadow and lift up when hovered */
 .job-card {
   position: relative;
   background: #fff;
@@ -112,8 +120,8 @@ main {
   box-shadow: 0 6px 20px rgba(92, 107, 192, 0.13);
 }
 
-
-/* Input wrappers inside columns */
+/* Form input containers - Wraps our input fields */
+/* Stacks inputs vertically with consistent spacing */
 .input-wrapper {
   display: flex;
   flex-direction: column;
@@ -136,7 +144,10 @@ main {
   outline: none;
 }
 
-/* Buttons */
+/* Button Styles */
+/* All buttons share similar gradient backgrounds and hover effects */
+
+/* Add/Submit buttons - Primary action buttons */
 .add-button,
 .submit-button {
   background: linear-gradient(135deg, #5C6BC0, #007acc);
@@ -163,7 +174,7 @@ main {
   box-shadow: none;
 }
 
-/* Edit button styling (matches other buttons, slightly smaller) */
+/* Edit button - Smaller version of primary buttons */
 .edit-button {
   background: linear-gradient(135deg, #5C6BC0, #007acc);
   color: #fff;
@@ -186,7 +197,8 @@ main {
   box-shadow: none;
 }
 
-/* Delete button styling */
+/* Delete button - Red warning button */
+/* Positioned in top-right corner of job cards */
 .delete-button {
   position: absolute;
   top: 12px;
@@ -208,7 +220,8 @@ main {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Update button */
+/* Update button - Used for saving changes */
+/* Similar to primary buttons but with different spacing */
 .update-button {
   background: linear-gradient(135deg, #5C6BC0, #007acc);
   color: #fff;
@@ -232,7 +245,8 @@ main {
   box-shadow: none;
 }
 
-/* Cancel button */
+/* Cancel button - Secondary action button */
+/* Light gray button for canceling actions */
 .cancel-button {
   background: #e0e0e0; /* light gray */
   color: #555;
@@ -256,8 +270,10 @@ main {
   box-shadow: none;
 }
 
-/* Page Navigation */
-/* Navigation controls for paginated job listings */
+/* Navigation Styles */
+/* Controls for moving between pages and sections */
+
+/* Page navigation container */
 .page-nav {
     display: flex;
     justify-content: center;
@@ -269,27 +285,26 @@ main {
     border-radius: 8px;
 }
 
-/* Navigation button styles */
+/* Navigation button - Used for links between pages */
 .nav-button {
+    position: absolute;
     display: block;
-    width: 100%;
+    width: 80%;
     text-align: center;
     text-decoration: none;
     background-color: #5C6BC0;
     color: white;
-    bottom: 100px;
+    top: 100px;
     padding: 10px 0;
     border-radius: 6px;
     margin-bottom: 10px;
-    bottom: 100px;
 }
 
-/* Navigation button hover effect */
-.nav-button:hover {
-    background-color: #4051b5;
-}
+/* Mobile Menu Styles */
+/* Hamburger menu for mobile devices */
 
-/* Sliding side menu for mobile navigation */
+/* Sliding menu container */
+/* Starts hidden off-screen and slides in when active */
 #nav-bar {
     position: fixed; /* Stays in place while scrolling */
     top: 0;
@@ -324,7 +339,9 @@ main {
     transition: background-color 0.2s ease;
 }
 
-/* Hamburger menu button hover effect */
+/* Visual feedback when hovering over buttons */
+/* Makes buttons slightly darker when the mouse is over them */
+.nav-button:hover,
 #hamburgerToggle:hover {
     background-color: #4051b5;
 }

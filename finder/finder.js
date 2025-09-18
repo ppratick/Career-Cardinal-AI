@@ -70,6 +70,13 @@ function displayJobs(jobs) {
 function createJobCard(job) {
   const card = document.createElement('div');
   card.className = 'job-card';
+
+  // Format the date string
+  const formattedDate = job.posted_date ? new Date(job.posted_date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  }) : '';
   
   // Fill card with job details, using empty string as fallback if property is missing
   card.innerHTML = `
@@ -77,7 +84,7 @@ function createJobCard(job) {
     <p class="job-company">${job.company || ''}</p>
     <p class="job-location">${job.location || ''}</p>
     <p class="job-type">${job.employment_type || job.type || ''}</p>
-    <p class="job-date">${job.posted_date || ''}</p>
+    <p class="job-date">${formattedDate}</p>
     <button class="apply-button" ${job.apply_link ? '' : 'disabled'}> Apply </button> 
   `;
 
@@ -190,5 +197,25 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         navBar.classList.remove('is-active');
     }
+});
+
+// Tab switching functionality
+document.addEventListener('DOMContentLoaded', () => {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove active class from all buttons and panes
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+            
+            // Add active class to clicked button
+            button.classList.add('active');
+            
+            // Show corresponding pane
+            const tabId = button.dataset.tab;
+            document.getElementById(`${tabId}-tab`).classList.add('active');
+        });
+    });
 });
 

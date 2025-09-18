@@ -1,9 +1,14 @@
-// ----------------------
-// Job Tracker Script
-// ----------------------
+// ========================================
+// Job Tracker - Main JavaScript File
+// This file handles all the interactive features of our job tracking board
+// ========================================
 
-const API_BASE_URL = "http://localhost:3000"; // Base URL for API requests
+// The website address where our server is running
+// We'll use this to save and load job data
+const API_BASE_URL = "http://localhost:3000";
 
+// Helper function to talk to our server
+// This is like sending a letter to the server asking for information or changes
 async function apiCall(endpoint, options ={}) {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers: {
@@ -18,7 +23,8 @@ async function apiCall(endpoint, options ={}) {
   return response.json();
 };
 
-// On page load, retrieve any saved job data from localStorage and render it into the correct columns.
+// When the webpage first loads, get all saved jobs from the server
+// Think of this like opening a filing cabinet and putting all jobs on the board
 window.addEventListener('DOMContentLoaded', async() => {
   try {
     const jobs = await apiCall('/jobs')
@@ -38,30 +44,30 @@ window.addEventListener('DOMContentLoaded', async() => {
   }
 });
 
-
-// Track the next unique job ID and store the currently dragged job for drag-and-drop
+// Keep track of which job card is being dragged
+// This helps us remember what we're moving and where it came from
 let draggedJob = { job: null, sourceColumnId: '' };
 
-// Creates a new job card element with display and edit modes
+// Create a new job card that can be edited, moved, and deleted
+// Think of this like creating a digital sticky note for each job
 function createJobCard(job) {
 
-  // Main job card container
+  // Create the main container for our job card
   const card = document.createElement('div');
   card.className = 'job-card';
-  card.setAttribute('draggable', 'true'); // Enable drag-and-drop
+  card.setAttribute('draggable', 'true'); // Makes it moveable
   card.setAttribute('data-job-id', job.id);
 
-  // -------------------
-  // Job title display
-  // -------------------
+  // Add the job title at the top of the card
+  // Like writing the job title at the top of a sticky note
   const titleSpan = document.createElement('span');
   titleSpan.className = 'job-title';
   titleSpan.textContent = job.title;
   card.appendChild(titleSpan);
 
-  // -------------------
-  // Display mode details
-  // -------------------
+  // Create two views for the card:
+  // 1. Display view - what you normally see
+  // 2. Edit view - appears when you click "Edit"
   const displayDiv = document.createElement('div');
   displayDiv.className = 'job-details';
   displayDiv.innerHTML = `
@@ -71,9 +77,8 @@ function createJobCard(job) {
     <div><strong>Notes:</strong> ${job.notes || ''}</div>
   `;
 
-  // -------------------
-  // Edit mode form
-  // -------------------
+  // Edit mode has input fields for changing job details
+  // Like turning our sticky note into a form we can edit
   const editDiv = document.createElement('div');
   editDiv.className = 'job-details';
   editDiv.style.display = 'none'; // Hidden until user clicks "Edit"
@@ -87,9 +92,8 @@ function createJobCard(job) {
     <button class="cancel-button">Cancel</button>
   `;
 
-  // -------------------
-  // Edit button toggles between display and edit modes
-  // -------------------
+  // Add buttons to edit and delete the job
+  // These let us modify or remove jobs from our board
   const editButton = document.createElement('button');
   editButton.textContent = 'Edit';
   editButton.className = 'edit-button';
@@ -130,9 +134,8 @@ function createJobCard(job) {
   });
   card.appendChild(deleteButton);
 
-  // -------------------
-  // Update button logic — saves edits to localStorage and updates the display
-  // -------------------
+  // Handle what happens when we save changes to a job
+  // This updates both the display and saves to the server
   card.querySelector('.update-button').addEventListener('click', async () => {
     try{
       const updatedValues = {
@@ -186,20 +189,18 @@ function createJobCard(job) {
     displayDiv.style.display = 'block';
   });
 
-  // -------------------
-  // Drag-and-drop start event — store dragged job details
-  // -------------------
+  // Set up drag and drop so we can move jobs between columns
+  // This lets us update a job's status by dragging it
   card.addEventListener('dragstart', () => {
     draggedJob.job = job;
     draggedJob.sourceColumnId = card.closest('.column').id;
   });
 
-  return card; // Return complete job card element
+  return card;
 }
 
-// -------------------
-// Drag-and-drop handling for each column's content area
-// -------------------
+// Make our columns accept dragged job cards
+// This lets us drop jobs into different status columns
 document.querySelectorAll('.column-content').forEach(container => {
   container.addEventListener('dragover', event => {
     event.preventDefault();
