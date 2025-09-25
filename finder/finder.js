@@ -15,8 +15,7 @@ async function fetchJobs(query = '', page = 1) {
     // Build the query parameter string
     // If there's a search query, include it, otherwise just use pagination
     const qParam = query 
-      ? `?q=${encodeURIComponent(query)}&limit=50&offset=${(page-1)*50}` 
-      : `?limit=50&offset=${(page-1)*50})`;
+      ? `?q=${encodeURIComponent(query)}&limit=50&offset=${(page-1)*50}` : `?limit=50&offset=${(page-1)*50})`;
     
     // Make API request to our backend
     const resp = await fetch(`${API_BASE}/api/jobs${qParam}`);
@@ -70,6 +69,7 @@ function displayJobs(jobs) {
 function createJobCard(job) {
   const card = document.createElement('div');
   card.className = 'job-card';
+  
 
   // Format the date string
   const formattedDate = job.posted_date ? new Date(job.posted_date).toLocaleDateString('en-US', {
@@ -85,7 +85,8 @@ function createJobCard(job) {
     <p class="job-location">${job.location || ''}</p>
     <p class="job-type">${job.employment_type || job.type || ''}</p>
     <p class="job-date">${formattedDate}</p>
-    <button class="apply-button" ${job.apply_link ? '' : 'disabled'}> Apply </button> 
+    <button class="apply-button" ${job.apply_link ? '' : 'disabled'}> Apply </button>
+    <button class="star-button">&#9734;</button> 
   `;
 
   // Add click handler to apply button if link exists
@@ -95,7 +96,7 @@ function createJobCard(job) {
       window.open(job.apply_link, '_blank'); // Open application link in new tab
     });
   }
-
+  
   return card;
 }
 
