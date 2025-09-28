@@ -91,7 +91,7 @@ function createJobCard(job) {
 
   // Add click handler to apply button if link exists
   const applyBtn = card.querySelector('.apply-button');
-  if (job.applied_link) {
+  if (job.apply_link) {
     applyBtn.addEventListener('click', () => {
       window.open(job.apply_link, '_blank'); // Open application link in new tab
     });

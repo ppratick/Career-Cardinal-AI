@@ -25,33 +25,34 @@ def ingest_queries(
 ):
     total = 0
     for q in queries:
-        for p in range(start_page, (start_page + pages)):
+        for p in range(start_page, start_page + pages):
             url = build_url(base_url, q, p, country, date_posted)
-            print(f"Ingesting: query='{q}") # Fill this in later 
+            print(f"Ingesting: query='{q}', page={p}, country={country}, date_posted={date_posted}") 
             try:
                 resp = requests.get(url, timeout=30)
                 if resp.status_code != 200:
-                    # print("FILL IN later") print error with first 200 chars opf response 
+                    print(f"HTTP {resp.status_code}: {resp.text[:200]}") 
                     continue
                 data = resp.json()
                 count = int(data.get("count", 0))
-                # print success message with count
+                print(f"Upserted/processed {count} jobs")
                 total += count
             except Exception as e:
-                print("fill in later, error message")
+                print(f"Error: {e}")
             if delay_sec > 0:
                 time.sleep(delay_sec)
     return total
 
 
 def main(argv):
-    parser = argparse.ArgumentParser(description="Batch-ingest jobs via backend injest endpoint")
+    parser = argparse.ArgumentParser(description="Batch-ingest jobs via backend ingest endpoint")
     parser.add_argument("--api-base", default="http://localhost:3000", help="Backend base URL")
     parser.add_argument("--query", action="append")
     parser.add_argument("--start-page", type = int, default = 1)
     parser.add_argument("--pages", type = int, default = 3)
-    #
-    #
+    parser.add_argument("--country", default="us", help="Country code")
+    parser.add_argument("--date-posted", default="week", help="Date filter")
+    parser.add_argument("--delay", type=float, default=1.0, help="Delay between calls")
 
     args = parser.parse_args(argv)
 
@@ -63,7 +64,7 @@ def main(argv):
     ]
 
 
-    # print(f"Backend: {args.api_base} | queries={queries}")
+    print(f"Backend: {args.api_base} | queries={queries}")
 
     total = ingest_queries(
         base_url=args.api_base, 
@@ -82,55 +83,3 @@ if __name__ == "__main__":
     raise SystemExit(main(sys.argv[1:]))
 
 
-
-
-
-# name = "Ethan"
-# age = 25
-# float_num = 3.14
-# is_student = True
-# text = 'single quotes works too'
-# fruits = ["apple", "banaana"]
-# numbers = [1, 2, 3, 4, 5]
-
-# result = build_url()
-
-# if age >= 18:
-#     print("Adult")
-# elif age >= 13:
-#     print("Tennager")
-# else:
-#     print("Child")
-
-# for i in fruits:
-#     print(i)
-
-
-# for i in range(len(fruits)):
-#     print(i)
-
-# for i in range(5):
-#     print(i)
-
-# for i in range(1, 6):
-#     print(i)
-
-
-
-# name = "Ethan"
-# age = 17
-
-# message = f"Hi {name}, you are {age} years old"
-# print(message)
-
-# first_fruit = fruits[0]
-# last_fruit = fruits[-1]
-
-# fruits.append("grape")
-
-
-# person = {"name": "Ethan", "age": 17}
-
-# name = person["name"]
-# age = person.get("age", 0)
-# person["age"] = 20
