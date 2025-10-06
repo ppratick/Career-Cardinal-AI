@@ -25,10 +25,24 @@ async function fetchJobs(query = '', page = 1) {
 
     // Parse JSON response and ensure jobs is always an array
     const data = await resp.json();
-    const jobs = Array.isArray(data.jobs) ? data.jobs : [];
-    allJobs = jobs; // Update global jobs array
-    displayJobs(jobs); // Show jobs on the page
-    console.log(`loaded ${jobs.length} jobs for query: ${query || '(all)'}`);
+    const allJobsFromAPI = Array.isArray(data.jobs) ? data.jobs : [];
+    
+    // FILTERING LOGIC: Get saved jobs from tracker to filter them out
+    // This prevents showing jobs that are already saved in the tracker
+    const savedJobs = await getSavedJobs();
+    
+    // FILTER OUT SAVED JOBS: Only show jobs that haven't been saved yet
+    // Compare job title and company to identify duplicates
+    const unsavedJobs = allJobsFromAPI.filter(job => {
+      return !savedJobs.some(savedJob => 
+        savedJob.title === job.title && 
+        savedJob.company === job.company
+      );
+    });
+    
+    allJobs = unsavedJobs; // Update global jobs array with filtered jobs
+    displayJobs(unsavedJobs); // Show only unsaved jobs
+    console.log(`loaded ${allJobsFromAPI.length} jobs, showing ${unsavedJobs.length} unsaved jobs for query: ${query || '(all)'}`);
   } catch (error) {
     console.error('Failed to load job:', error);
     showErrorMessage(error.message);
@@ -86,7 +100,7 @@ function createJobCard(job) {
     <p class="job-type">${job.employment_type || job.type || ''}</p>
     <p class="job-date">${formattedDate}</p>
     <button class="apply-button" ${job.apply_link ? '' : 'disabled'}> Apply </button>
-    <button class="star-button">&#9734;</button> 
+    <button type="button" class="star-button">&#9734;</button> <!-- STAR BUTTON: Click to save job to tracker --> 
   `;
 
   // Add click handler to apply button if link exists
@@ -96,6 +110,22 @@ function createJobCard(job) {
       window.open(job.apply_link, '_blank'); // Open application link in new tab
     });
   }
+
+  // STAR BUTTON CLICK HANDLER: Save job to tracker and remove from finder
+  const starBtn = card.querySelector('.star-button');
+  
+  starBtn.addEventListener('click', async (e) => {
+    e.preventDefault(); // Prevent any default button behavior
+    e.stopPropagation(); // Stop event from bubbling up
+    
+    // SAVE TO TRACKER: Add job to tracker's "saved" column
+    await saveJobToTracker(job);
+    
+    // REMOVE FROM FINDER: Job disappears from job finder (no duplicates)
+    card.remove();
+    
+    console.log('Job saved and removed from finder:', job.title);
+  });
   
   return card;
 }
@@ -125,6 +155,44 @@ function showLoadingMessage() {
       <p>Please wait while we fetch the latest job listings.</p>
     </div>
   `;
+}
+
+/**
+ * GET SAVED JOBS: Fetches all jobs from tracker that have status 'saved'
+ * Used to filter out already-saved jobs from the job finder display
+ */
+async function getSavedJobs() {
+  try {
+    const response = await fetch(`${API_BASE}/jobs`);
+    const jobs = await response.json();
+    return jobs.filter(job => job.status === 'saved'); // Only return saved jobs
+  } catch (error) {
+    console.error('Failed to get saved jobs:', error);
+    return []; // Return empty array if fetch fails
+  }
+}
+
+/**
+ * SAVE JOB TO TRACKER: Converts job finder job to tracker format and saves it
+ * Creates a job entry in the tracker's "saved" column with proper formatting
+ */
+async function saveJobToTracker(job) {
+  // Transform job finder data format to match tracker's expected format
+  const jobData = {
+    title: job.title || '', // Job title, fallback to empty string if missing
+    company: job.company || '', // Company name, fallback to empty string if missing
+    date: job.posted_date ? new Date(job.posted_date).toISOString().split('T')[0] : '', // Convert posted date to YYYY-MM-DD format for tracker
+    link: job.apply_link || '', // Application URL, fallback to empty string if missing
+    notes: `Found via Job Finder - ${job.location || ''} - ${job.employment_type || ''}`, // Auto-generate notes with location and job type info
+    status: 'saved' // Set status to 'saved' so it appears in tracker's saved column
+  };
+
+  // Send POST request to backend API to save the job to the tracker database
+  await fetch(`${API_BASE}/jobs`, {
+    method: 'POST', // HTTP method for creating new resource
+    headers: { 'Content-Type': 'application/json' }, // Tell server we're sending JSON data
+    body: JSON.stringify(jobData) // Convert job data object to JSON string for transmission
+  });
 }
 
 // When page loads, set up search and fetch initial jobs
