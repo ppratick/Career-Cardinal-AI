@@ -2,31 +2,43 @@
 <html lang="en">
 
 <head>
+  <!-- Basic meta tags for character encoding and responsive design -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  <!-- Page title and stylesheet -->
   <title>Pathfinder - Progress Map</title>
   <link rel="stylesheet" href="tracker.css">
 </head>
 
 <body>
+  <!-- Site header with title and subtitle -->
+  <header class="site-header">
+    <h1>Progress Map</h1>
+    <p class="subtitle">Track your job applications and career progress</p>
+  </header>
 
-<header class="site-header">
-  <h1>Progress Map</h1>
-  <p class="subtitle">Track your job applications and career progress</p>
-</header>
-
+  <!-- Main content area with kanban board -->
   <main>
+    <!-- Mobile navigation with hamburger menu -->
     <nav class="navigation">
       <button id="hamburgerToggle" aria-label="Toggle menu">☰</button>
       <div id="nav-bar">
+        <!-- Navigation link to job finder page -->
         <a href="../finder/finder.html" class="nav-button">Job Finder</a>
-        <a href="https://www.gofundme.com/c/start?utm_source=google&utm_medium=cpc&utm_campaign=3Q_US_Brand_Plus&utm_content=general&utm_term=gofundme_e_c_&gad_source=1&gad_campaignid=20279257806&gbraid=0AAAAADj5gID6Xix4w7eRLdwsl-zpoVKbJ&gclid=Cj0KCQjw267GBhCSARIsAOjVJ4EkVcbMUkXnXC5fP3Q9SfCn8CtT7I7jakzuojS_A0oznSJyDBqu5vMaAh44EALw_wcB"  target = "_blank" class = "nav-buttonn">GoFundMe</a>
+        <!-- External link to GoFundMe -->
+        <a href="https://www.gofundme.com/c/start?utm_source=google&utm_medium=cpc&utm_campaign=3Q_US_Brand_Plus&utm_content=general&utm_term=gofundme_e_c_&gad_source=1&gad_campaignid=20279257806&gbraid=0AAAAADj5gID6Xix4w7eRLdwsl-zpoVKbJ&gclid=Cj0KCQjw267GBhCSARIsAOjVJ4EkVcbMUkXnXC5fP3Q9SfCn8CtT7I7jakzuojS_A0oznSJyDBqu5vMaAh44EALw_wcB"  target = "_blank" class = "nav-button nav-button-secondary">GoFundMe</a>
       </div>
     </nav>
 
+    <!-- Kanban board section with job tracking columns -->
     <section class="board">
       
+      <!-- Saved jobs column with job creation form -->
       <div class="column" id="saved">
         <div class="column-content">
           <h2>Saved</h2>
+          <!-- Job creation form (hidden by default) -->
           <div class="input-wrapper" style="display: none;">
             <input type="text" class="job-title" placeholder="Job Title" />
             <input type="text" class="company-name" placeholder="Company" />
@@ -39,9 +51,11 @@
         <button class="add-button" data-column="saved">Add Job</button>
       </div>
 
+      <!-- Applied jobs column -->
       <div class="column" id="applied">
         <div class="column-content">
           <h2>Applied</h2>
+          <!-- Job creation form (hidden by default) -->
           <div class="input-wrapper" style="display: none;">
             <input type="text" class="job-title" placeholder="Job Title" />
             <input type="text" class="company-name" placeholder="Company" />
@@ -54,9 +68,11 @@
         <button class="add-button" data-column="applied">Add Job</button>
       </div>
 
+      <!-- Interview stage column -->
       <div class="column" id="interview">
         <div class="column-content">
           <h2>Interview</h2>
+          <!-- Job creation form (hidden by default) -->
           <div class="input-wrapper" style="display: none;">
             <input type="text" class="job-title" placeholder="Job Title" />
             <input type="text" class="company-name" placeholder="Company" />
@@ -69,9 +85,11 @@
         <button class="add-button" data-column="interview">Add Job</button>
       </div>
 
+      <!-- Job offers and decisions column -->
       <div class="column" id="offers-decisions">
         <div class="column-content">
           <h2>Offers / Decisions</h2>
+          <!-- Job creation form (hidden by default) -->
           <div class="input-wrapper" style="display: none;">
             <input type="text" class="job-title" placeholder="Job Title" />
             <input type="text" class="company-name" placeholder="Company" />
@@ -86,6 +104,7 @@
     </section>
   </main>
 
+  <!-- JavaScript functionality for drag-and-drop and job management -->
   <script src="tracker.js"></script>
 </body>
 </html>

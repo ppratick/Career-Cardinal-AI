@@ -1,3 +1,4 @@
+/* Reset default browser styles and set consistent box-sizing */
 *,
 *::before,
 *::after {
@@ -6,6 +7,7 @@
   padding: 0;
 }
 
+/* Main body styling with gradient background and dot pattern */
 body {
   font-family: "Segoe UI", Roboto, sans-serif;
   background: linear-gradient(135deg, #f4f6f8, #e8ecf5);
@@ -17,12 +19,14 @@ body {
   flex-direction: column;
 }
 
+/* Site header container with centered content */
 .site-header {
   text-align: center;
   padding: 40px 20px 20px;
   color: #2c3e50;
 }
 
+/* Main site title with gradient text effect */
 .site-header h1 {
   font-size: 2.8rem;
   font-weight: 700;
@@ -33,12 +37,14 @@ body {
   margin-bottom: 10px;
 }
 
+/* Site subtitle styling */
 .site-header .subtitle {
   font-size: 1.2rem;
   color: #555;
   font-weight: 400;
 }
 
+/* Main content area with flexible layout */
 main {
   flex: 1;
   padding: 40px 20px;
@@ -49,6 +55,7 @@ main {
   overflow-x: auto;
 }
 
+/* Kanban board container with glassmorphism effect */
 .board {
   display: flex;
   justify-content: center;
@@ -64,6 +71,7 @@ main {
   overflow-x: auto;
 }
 
+/* Individual kanban column styling */
 .column {
   background: #fff;
   border-radius: 16px;
@@ -78,11 +86,13 @@ main {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* Column hover effect with lift animation */
 .column:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
 
+/* Column header styling */
 .column h2 {
   font-size: 1.4rem;
   font-weight: 600;
@@ -90,6 +100,7 @@ main {
   margin-bottom: 10px;
 }
 
+/* Individual job card styling with drag-and-drop support */
 .job-card {
   position: relative;
   background: #fff;
@@ -106,6 +117,7 @@ main {
   overflow-y: auto;
 }
 
+/* Job card title styling with bottom border */
 .job-card .job-title {
   font-size: 1.1rem;
   font-weight: 600;
@@ -116,6 +128,7 @@ main {
   padding-right: 30px;
 }
 
+/* Job details container with scrollable content */
 .job-card .job-details {
   display: flex;
   flex-direction: column;
@@ -126,12 +139,14 @@ main {
   padding-right: 8px;
 }
 
+/* Individual job detail row */
 .job-card .job-details div {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
+/* Job detail labels styling */
 .job-card .job-details strong {
   color: #2d3748;
   font-size: 0.9rem;
@@ -139,6 +154,7 @@ main {
   letter-spacing: 0.5px;
 }
 
+/* Job link styling with hover effects */
 .job-card .job-link {
   color: #5C6BC0;
   text-decoration: none;
@@ -146,11 +162,13 @@ main {
   transition: color 0.2s ease;
 }
 
+/* Job link hover state */
 .job-card .job-link:hover {
   color: #3949ab;
   text-decoration: underline;
 }
 
+/* Form inputs within job cards */
 .job-card .job-details input,
 .job-card .job-details textarea {
   width: 100%;
@@ -162,6 +180,7 @@ main {
   transition: all 0.2s ease;
 }
 
+/* Form input focus state */
 .job-card .job-details input:focus,
 .job-card .job-details textarea:focus {
   border-color: #5C6BC0;
@@ -170,12 +189,14 @@ main {
   box-shadow: 0 0 0 3px rgba(92, 107, 192, 0.1);
 }
 
+/* Button group container for job card actions */
 .job-card .button-group {
   display: flex;
   gap: 8px;
   margin-top: 8px;
 }
 
+/* Primary action buttons (add and submit) */
 .add-button,
 .submit-button {
   background: linear-gradient(135deg, #5C6BC0, #007acc);
@@ -189,6 +210,7 @@ main {
   transition: transform 0.2s ease, background 0.3s ease, box-shadow 0.2s ease;
 }
 
+/* Primary button hover effect */
 .add-button:hover,
 .submit-button:hover {
   background: linear-gradient(135deg, #4a59a8, #0060a1);
@@ -196,12 +218,14 @@ main {
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
+/* Primary button active state */
 .add-button:active,
 .submit-button:active {
   transform: translateY(0);
   box-shadow: none;
 }
 
+/* Edit button styling for job cards */
 .edit-button {
   background: linear-gradient(135deg, #5C6BC0, #007acc);
   color: #fff;
@@ -213,17 +237,20 @@ main {
   transition: transform 0.2s ease, background 0.3s ease, box-shadow 0.2s ease;
 }
 
+/* Edit button hover effect */
 .edit-button:hover {
   background: linear-gradient(135deg, #4a59a8, #0060a1);
   transform: translateY(-1px);
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
+/* Edit button active state */
 .edit-button:active {
   transform: translateY(0);
   box-shadow: none;
 }
 
+/* Delete button positioned in top-right corner of job card */
 .delete-button {
   position: absolute;
   top: 12px;
@@ -239,12 +266,14 @@ main {
   transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* Delete button hover effect */
 .delete-button:hover {
   background: #d32f2f;
   transform: translateY(-1px);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Update button for saving job edits */
 .update-button {
   background: linear-gradient(135deg, #5C6BC0, #007acc);
   color: #fff;
@@ -257,17 +286,20 @@ main {
   transition: transform 0.2s ease, background 0.3s ease, box-shadow 0.2s ease;
 }
 
+/* Update button hover effect */
 .update-button:hover {
   background: linear-gradient(135deg, #4a59a8, #0060a1);
   transform: translateY(-1px);
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
+/* Update button active state */
 .update-button:active {
   transform: translateY(0);
   box-shadow: none;
 }
 
+/* Cancel button for canceling job edits */
 .cancel-button {
   background: #e0e0e0;
   color: #555;
@@ -279,6 +311,7 @@ main {
   transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* Cancel button hover effect */
 .cancel-button:hover {
   background: #cccccc;
   color: #333;
@@ -286,11 +319,13 @@ main {
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
+/* Cancel button active state */
 .cancel-button:active {
   transform: translateY(0);
   box-shadow: none;
 }
 
+/* Page navigation container */
 .page-nav {
     display: flex;
     justify-content: center;
@@ -302,6 +337,7 @@ main {
     border-radius: 8px;
 }
 
+/* Primary navigation button styling */
 .nav-button {
     position: absolute;
     display: block;
@@ -317,27 +353,13 @@ main {
     transition: transform 0.2s ease, background 0.3s ease, box-shadow 0.2s ease;
 }
 
-.nav-buttonn {
-    position: absolute;
-    display: block;
-    width: 80%;
-    text-align: center;
-    text-decoration: none;
-    background: linear-gradient(135deg, #5C6BC0, #007acc);
-    color: white;
+/* Secondary navigation button styling (positioned lower) */
+.nav-button-secondary {
     top: 175px;
-    padding: 10px 0;
-    border-radius: 6px;
-    margin-bottom: 10px;
-    transition: transform 0.2s ease, background 0.3s ease, box-shadow 0.2s ease;
 }
 
-.nav-buttonn:hover {
-    background: linear-gradient(135deg, #4a59a8, #0060a1);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
 
+/* Mobile navigation sidebar (hidden by default) */
 #nav-bar {
     position: fixed;
     top: 0;
@@ -351,10 +373,12 @@ main {
     z-index: 1000;
 }
 
+/* Active state for mobile navigation */
 #nav-bar.is-active {
     transform: translateX(300px);
 }
 
+/* Hamburger menu toggle button */
 #hamburgerToggle {
     position: fixed;
     top: 1rem;
@@ -370,6 +394,7 @@ main {
     transition: background-color 0.2s ease;
 }
 
+/* Navigation button hover effects */
 .nav-button:hover,
 #hamburgerToggle:hover {
     background: linear-gradient(135deg, #4a59a8, #0060a1);
@@ -377,6 +402,7 @@ main {
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
+/* Input wrapper for job creation forms */
 .input-wrapper {
     display: flex;
     flex-direction: column;
@@ -387,6 +413,7 @@ main {
     margin-top: 10px;
 }
 
+/* Form inputs within input wrapper */
 .input-wrapper input,
 .input-wrapper textarea {
     padding: 8px;
@@ -395,6 +422,7 @@ main {
     font-size: 0.92rem;
 }
 
+/* Textarea specific styling with resize controls */
 .input-wrapper textarea {
     height: 80px;
     resize: vertical;
@@ -402,6 +430,7 @@ main {
     max-height: 120px;
 }
 
+/* Duplicate board styling (consolidated above) */
 .board {
     display: flex;
     justify-content: center;
@@ -417,6 +446,7 @@ main {
     overflow-x: auto;
 }
 
+/* Duplicate column styling (consolidated above) */
 .column {
     background: #fff;
     border-radius: 16px;
@@ -431,6 +461,7 @@ main {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* Duplicate main styling (consolidated above) */
 main {
     flex: 1;
     padding: 40px 20px;
@@ -441,6 +472,7 @@ main {
     overflow-x: auto;
 }
 
+/* Responsive design for smaller screens */
 @media (max-width: 1500px) {
     .board {
         padding: 16px;

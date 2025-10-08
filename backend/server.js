@@ -1,16 +1,21 @@
+// Load environment variables from .env file
 require('dotenv').config();
 
+// Import required dependencies
 const express = require('express');
 const cors = require('cors');
 const sqlite3 = require('sqlite3').verbose();
 const fetch = require('node-fetch');
 
+// Initialize Express application
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
-app.use(express.json());
+// Configure middleware
+app.use(cors()); // Enable CORS for cross-origin requests
+app.use(express.json()); // Parse JSON request bodies
 
+// Initialize SQLite database connection
 const db = new sqlite3.Database('jobs.db', (err) => {
     if (err) {
         console.error('DB error:', err.message);
@@ -19,13 +24,16 @@ const db = new sqlite3.Database('jobs.db', (err) => {
     }
 });
 
+// JSearch API configuration
 const JSEARCH_API_KEY = process.env.JSEARCH_API_KEY;
 const JSEARCH_BASE_URL = process.env.JSEARCH_BASE_URL || 'https://jsearch.p.rapidapi.com';
 
+// Validate API key configuration
 if (!JSEARCH_API_KEY) {
     console.warn('Warning: JSEARCH_API_KEY is not set. Job search functionality will be disabled.');
 }
 
+// Create legacy jobs table for backward compatibility
 db.run(`
     CREATE TABLE IF NOT EXISTS jobs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,6 +46,11 @@ db.run(`
     )
 `);
 
+/**
+ * Maps JSearch API job data to our database schema
+ * @param {Object} job - Job object from JSearch API
+ * @returns {Object} Mapped job object for database storage
+ */
 function mapJSearchJobToDB(job){
     return {
         job_id: job.job_id,
@@ -55,8 +68,15 @@ function mapJSearchJobToDB(job){
     };
 }
 
+/**
+ * Upserts a job listing into the database (insert or update if exists)
+ * @param {Object} db - Database connection object
+ * @param {Object} row - Job data to upsert
+ * @returns {Promise<number>} Number of affected rows
+ */
 function upsertJobListing(db, row){
     return new Promise((resolve, reject) => {
+        // SQL query to insert or update job listing based on job_id
         const sql = `
             INSERT INTO job_listings (
                 job_id, title, company, location, employment_type, description, 
@@ -75,6 +95,8 @@ function upsertJobListing(db, row){
                 salary_max = excluded.salary_max,
                 salary_currency = excluded.salary_currency
         `;
+        
+        // Execute the upsert query with job data
         db.run(
             sql, 
             [
@@ -99,12 +121,19 @@ function upsertJobListing(db, row){
     });
 }
 
+/**
+ * Search for jobs using JSearch API and store results in database
+ * GET /api/jobs/search?query=term&page=1&country=us&date_posted=all
+ */
 app.get('/api/jobs/search', async (req, res) => {
     try{
+        // Extract and validate query parameters
         const query = (req.query.query || '').toString();
         const page = parseInt(req.query.page, 10) || 1;
         const country = (req.query.country || 'us').toString();
         const date_posted = (req.query.date_posted || 'all').toString();
+        
+        // Validate required parameters
         if(!query) {
             return res.status(400).json({error: 'Missing query parameter: query'});
         }
@@ -112,8 +141,10 @@ app.get('/api/jobs/search', async (req, res) => {
             return res.status(500).json({error: 'Server missing API configuration'});
         }
 
+        // Build JSearch API URL with parameters
         const url = `${JSEARCH_BASE_URL}/search?query=${encodeURIComponent(query)}&page=${page}&num_pages=1&country=${encodeURIComponent(country)}&date_posted=${encodeURIComponent(date_posted)}`;
 
+        // Make request to JSearch API
         const response = await fetch(url, {
             method: 'GET',
             headers: {
@@ -122,24 +153,29 @@ app.get('/api/jobs/search', async (req, res) => {
             }
         });
 
+        // Handle API errors
         if (!response.ok) {
             const text = await response.text()
             console.error('JSearch error:', response.status, text);
             return res.status(502).json({error: 'Failed to fetch jobs from JSearch'});
         }
 
+        // Parse response and extract job data
         const data = await response.json();
         const jobs = Array.isArray(data.data) ? data.data : [];
 
+        // Store each job in database
         for (const job of jobs) {
             const row = mapJSearchJobToDB(job);
-            if(!row.job_id) continue;
+            if(!row.job_id) continue; // Skip jobs without valid ID
             try{
                 await upsertJobListing(db, row);
             } catch (e) {
                 console.error('Failed to upsert job', row.job_id, e.message);
             }
         }
+        
+        // Return mapped job data to client
         const result = jobs.map(mapJSearchJobToDB);
         res.json({count: result.length, jobs: result});
     }catch (err){
@@ -148,10 +184,17 @@ app.get('/api/jobs/search', async (req, res) => {
     }
 });
 
+/**
+ * Retrieve job listings from database with optional search and pagination
+ * GET /api/jobs?q=search&limit=50&offset=0
+ */
 app.get('/api/jobs', (req, res) =>{
+    // Extract and validate query parameters
     const query = (req.query.q || '').toString().trim();
-    const limit = Math.min(parseInt(req.query.limit, 10) || 50, 100); 
+    const limit = Math.min(parseInt(req.query.limit, 10) || 50, 100); // Cap at 100
     const offset = (parseInt(req.query.offset, 10) || 0); 
+    
+    // Build dynamic WHERE clause for search
     const params = [];
     let whereClause = '';
     if (query) {
@@ -159,11 +202,15 @@ app.get('/api/jobs', (req, res) =>{
         const likeQuery = `%${query}%`;
         params.push(likeQuery, likeQuery, likeQuery);
     }
+    
+    // Construct SQL query with search and pagination
     const sql = `SELECT id, job_id, title, company, location, employment_type, description, apply_link, is_remote, posted_date, salary_min, salary_max, salary_currency
                  FROM job_listings ${whereClause}
                  ORDER BY created_at DESC
                  LIMIT ? OFFSET ?`;
     params.push(limit, offset);
+    
+    // Execute query and return results
     db.all(sql, params, (err, rows) => {
         if (err) {
             console.error('Error fetching jobs from database:', err.message);
@@ -173,6 +220,7 @@ app.get('/api/jobs', (req, res) =>{
     });
 });
 
+// Create main job_listings table for storing job data from external APIs
 db.run(`
     CREATE TABLE IF NOT EXISTS job_listings (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -189,10 +237,13 @@ db.run(`
         salary_max INTEGER,
         salary_currency TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-
     )
 `);
 
+/**
+ * Legacy endpoint to fetch jobs from old jobs table
+ * GET /jobs
+ */
 app.get('/jobs', (req, res) => {
     db.all('SELECT * FROM jobs', [], (err, rows) => {
         if (err) {
@@ -203,11 +254,15 @@ app.get('/jobs', (req, res) => {
     });
 });
 
+/**
+ * Get total count of job listings with optional search filter
+ * GET /api/jobs/count?q=search
+ */
 app.get('/api/jobs/count', (req, res) => {
     const query = (req.query.q || '').toString().trim();
 
+    // Build search parameters
     const params = [];
-
     let whereClause = '';
 
     if (query) {
@@ -216,6 +271,7 @@ app.get('/api/jobs/count', (req, res) => {
         params.push(likeQuery, likeQuery, likeQuery);
     }
 
+    // Execute count query
     const countSQL = `SELECT COUNT(*) as total FROM job_listings ${whereClause}`;
 
     db.get(countSQL, params, (err, row) => {
@@ -228,6 +284,10 @@ app.get('/api/jobs/count', (req, res) => {
     });
 });
 
+/**
+ * Create a new job entry in the legacy jobs table
+ * POST /jobs
+ */
 app.post('/jobs', (req, res) => {
     const {title, company, date, link, notes, status} = req.body;
     const query = 'INSERT INTO jobs (title, company, date, link, notes, status) VALUES (?, ?, ?, ?, ?, ?)';
@@ -240,6 +300,10 @@ app.post('/jobs', (req, res) => {
     });
 });
 
+/**
+ * Update an existing job entry
+ * PUT /jobs/:id
+ */
 app.put('/jobs/:id', (req, res) =>{
     const jobId = req.params.id;
     const {title, company, date, link, notes, status} = req.body;
@@ -253,6 +317,10 @@ app.put('/jobs/:id', (req, res) =>{
     });
 });
 
+/**
+ * Delete a job entry
+ * DELETE /jobs/:id
+ */
 app.delete('/jobs/:id', (req, res) =>{
     const jobId = req.params.id;
     db.run('DELETE FROM jobs WHERE id = ?', [jobId], function(err){
@@ -264,10 +332,15 @@ app.delete('/jobs/:id', (req, res) =>{
     })
 }); 
 
+/**
+ * Health check endpoint
+ * GET /
+ */
 app.get('/', (req, res) => {
     res.send('Backend is running!');
 });
 
+// Start the server
 app.listen(PORT, () => {
     console.log(`Server started at http://localhost:${PORT}`);
 });

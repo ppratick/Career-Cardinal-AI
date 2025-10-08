@@ -1,7 +1,14 @@
-const API_BASE_URL = "http://localhost:3000";
+// API configuration for backend communication
+const API_BASE = "http://localhost:3000";
 
+/**
+ * Generic API call function for making HTTP requests to the backend
+ * @param {string} endpoint - The API endpoint to call
+ * @param {Object} options - Additional fetch options (method, body, etc.)
+ * @returns {Promise<Object>} - Parsed JSON response from the API
+ */
 async function apiCall(endpoint, options ={}) {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+  const response = await fetch(`${API_BASE}${endpoint}`, {
     headers: {
       'Content-Type': 'application/json'
     }, 
@@ -14,10 +21,14 @@ async function apiCall(endpoint, options ={}) {
   return response.json();
 };
 
+// Initialize the job tracker when DOM is loaded
 window.addEventListener('DOMContentLoaded', async() => {
   try {
+    // Fetch all jobs from the API
     const jobs = await apiCall('/jobs')
     console.log('Jobs loaded from the server: ', jobs);
+    
+    // Create job cards and place them in appropriate columns
     if (jobs && jobs.length > 0){
       jobs.forEach(job =>{
         const jobCard = createJobCard(job);
@@ -33,20 +44,29 @@ window.addEventListener('DOMContentLoaded', async() => {
   }
 });
 
+// Global variable to track the currently dragged job and its source column
 let draggedJob = { job: null, sourceColumnId: '' };
 
+/**
+ * Creates a job card DOM element with job details and interactive buttons
+ * @param {Object} job - Job object containing job details
+ * @returns {HTMLElement} - Job card DOM element
+ */
 function createJobCard(job) {
 
+  // Create the main job card container
   const card = document.createElement('div');
   card.className = 'job-card';
   card.setAttribute('draggable', 'true');
   card.setAttribute('data-job-id', job.id);
 
+  // Create job title span
   const titleSpan = document.createElement('span');
   titleSpan.className = 'job-title';
   titleSpan.textContent = job.title;
   card.appendChild(titleSpan);
 
+  // Create display div with job details
   const displayDiv = document.createElement('div');
   displayDiv.className = 'job-details';
   const dateLabel = job.status === 'saved' ? 'Date Saved:' : 'Date Applied:';
@@ -57,6 +77,7 @@ function createJobCard(job) {
     <div><strong>Notes:</strong> ${job.notes || ''}</div>
   `;
 
+  // Create edit form div (hidden by default)
   const editDiv = document.createElement('div');
   editDiv.className = 'job-details';
   editDiv.style.display = 'none';
@@ -70,6 +91,7 @@ function createJobCard(job) {
     <button class="cancel-button">Cancel</button>
   `;
 
+  // Create edit button and add click handler
   const editButton = document.createElement('button');
   editButton.textContent = 'Edit';
   editButton.className = 'edit-button';
@@ -80,13 +102,16 @@ function createJobCard(job) {
   });
   displayDiv.appendChild(editButton);
 
+  // Append display and edit divs to the card
   card.appendChild(displayDiv);
   card.appendChild(editDiv);
 
+  // Prevent card click when clicking buttons
   card.addEventListener('click', (e) => {
     if (e.target.closest('button')) return;
   });
 
+  // Create delete button with confirmation
   const deleteButton = document.createElement('button');
   deleteButton.className = 'delete-button';
   deleteButton.textContent = 'X';
@@ -104,8 +129,10 @@ function createJobCard(job) {
   });
   card.appendChild(deleteButton);
 
+  // Add update button functionality
   card.querySelector('.update-button').addEventListener('click', async () => {
     try{
+      // Collect updated values from form inputs
       const updatedValues = {
         title: editDiv.querySelector('.edit-title').value.trim(),
         company: editDiv.querySelector('.edit-company').value.trim(),
@@ -114,10 +141,14 @@ function createJobCard(job) {
         notes: editDiv.querySelector('.edit-notes').value.trim(),
         status: job.status
       };
+      
+      // Send update to API
       await apiCall(`/jobs/${job.id}`, {
         method: 'PUT',
         body: JSON.stringify(updatedValues)
       });
+      
+      // Update local job object and UI
       Object.assign(job, updatedValues);
       titleSpan.textContent = job.title;
       const dateLabel = job.status === 'saved' ? 'Date Saved:' : 'Date Applied:';
@@ -127,6 +158,8 @@ function createJobCard(job) {
         <div><strong>Job Link:</strong> <a href="${job.link || '#'}" target="_blank" class="job-link">${job.link ? 'View Job Posting' : 'No link'}</a></div>
         <div><strong>Notes:</strong> ${job.notes || ''}</div>
       `;
+      
+      // Recreate edit button and switch back to display mode
       const newEditButton = document.createElement('button');
       newEditButton.textContent = 'Edit';
       newEditButton.className = 'edit-button';
@@ -145,6 +178,7 @@ function createJobCard(job) {
     }
   });
 
+  // Add cancel button functionality to restore original values
   card.querySelector('.cancel-button').addEventListener('click', () => {
     editDiv.querySelector('.edit-title').value = job.title || '';
     editDiv.querySelector('.edit-company').value = job.company || '';
@@ -155,6 +189,7 @@ function createJobCard(job) {
     displayDiv.style.display = 'block';
   });
 
+  // Add drag start event listener to track dragged job
   card.addEventListener('dragstart', () => {
     draggedJob.job = job;
     draggedJob.sourceColumnId = card.closest('.column').id;
@@ -163,25 +198,31 @@ function createJobCard(job) {
   return card;
 }
 
+// Set up drag and drop functionality for all column containers
 document.querySelectorAll('.column-content').forEach(container => {
+  // Handle drag over events to allow dropping
   container.addEventListener('dragover', event => {
     event.preventDefault();
     container.classList.add('drag-over');
   });
 
+  // Remove drag over styling when leaving drop zone
   container.addEventListener('dragleave', () => {
     container.classList.remove('drag-over');
   });
 
+  // Handle drop events to move jobs between columns
   container.addEventListener('drop', async () => {
     container.classList.remove('drag-over');
     const targetColumn = container.closest('.column');
     const targetColumnId = targetColumn.id;
 
+    // Validate drop operation
     if (!draggedJob.job) return;
     if (draggedJob.sourceColumnId == targetColumnId) return;
 
     try {
+      // Update job status in database
       await apiCall(`/jobs/${draggedJob.job.id}`, {
         method: 'PUT',
         body: JSON.stringify({
@@ -190,11 +231,14 @@ document.querySelectorAll('.column-content').forEach(container => {
         })
       });
 
+      // Update local job object
       draggedJob.job.status = targetColumnId;
 
+      // Create new job card in target column
       const newJobCard = createJobCard(draggedJob.job);
       container.insertBefore(newJobCard, container.querySelector('.input-wrapper'));
 
+      // Remove old job card from source column
       const sourceColumn = document.getElementById(draggedJob.sourceColumnId);
       const cards = sourceColumn.querySelectorAll('.job-card');
       for (let card of cards) {
@@ -210,15 +254,18 @@ document.querySelectorAll('.column-content').forEach(container => {
       alert('Failed to move job');
     }
 
+    // Reset dragged job state
     draggedJob = { job: null, sourceColumnId: '' };
   });
 });
 
+// Set up add job button functionality for all columns
 document.querySelectorAll('.add-button').forEach(button => {
   button.addEventListener('click', () => {
     const wrapper = button.previousElementSibling.querySelector('.input-wrapper');
     const isHidden = wrapper.style.display === 'none' || wrapper.style.display === '';
 
+    // Toggle form visibility and button text
     if (isHidden) {
       wrapper.style.display = 'flex';
       button.textContent = 'Cancel';
@@ -229,26 +276,32 @@ document.querySelectorAll('.add-button').forEach(button => {
   });
 });
 
+// Set up submit button functionality for creating new jobs
 document.querySelectorAll('.submit-button').forEach(button => {
   button.addEventListener('click', async () => {
     const columnId = button.getAttribute('data-column');
     const inputWrapper = button.parentElement;
 
+    // Collect form data
     const title = inputWrapper.querySelector('.job-title').value.trim();
     const company = inputWrapper.querySelector('.company-name').value.trim();
     const date = inputWrapper.querySelector('.date-applied').value.trim();
     const link = inputWrapper.querySelector('.job-link').value.trim();
     const notes = inputWrapper.querySelector('.job-notes')?.value.trim() || '';
 
+    // Validate required fields
     if (title === '') return;
 
     const jobData = {title, company, date, link, notes, status: columnId};
 
     try {
+      // Create new job via API
       const response = await apiCall('/jobs', {
         method: 'POST',
         body: JSON.stringify(jobData)
       });
+      
+      // Create complete job object with ID
       const completeJob = {
         id: response.id,
         title: jobData.title,
@@ -258,10 +311,13 @@ document.querySelectorAll('.submit-button').forEach(button => {
         notes: jobData.notes,
         status: jobData.status
       }
+      
+      // Create and add job card to column
       const newJobInput = createJobCard(completeJob);
       const column = document.getElementById(columnId);
       column.querySelector('.column-content').insertBefore(newJobInput, column.querySelector('.input-wrapper'));
 
+      // Clear form and hide it
       inputWrapper.querySelector('.job-title').value = '';
       inputWrapper.querySelector('.company-name').value = '';
       inputWrapper.querySelector('.date-applied').value = '';
@@ -271,6 +327,7 @@ document.querySelectorAll('.submit-button').forEach(button => {
       }
       button.parentElement.style.display = 'none';
 
+      // Reset add button text
       const addButton = column.querySelector('.add-button');
       addButton.textContent = 'Add Job';
     } catch (error) {
@@ -280,19 +337,23 @@ document.querySelectorAll('.submit-button').forEach(button => {
 
   });
 });
+// Mobile navigation functionality
 const hamburgerBtn = document.getElementById('hamburgerToggle');
 const navBar = document.getElementById('nav-bar');
 
+// Toggle mobile navigation menu
 hamburgerBtn.addEventListener('click', () => {
     navBar.classList.toggle('is-active');
 });
 
+// Close mobile menu when clicking outside
 document.addEventListener('click', (e) => {
     if (!navBar.contains(e.target) && !hamburgerBtn.contains(e.target)) {
         navBar.classList.remove('is-active');
     }
 });
 
+// Close mobile menu with Escape key
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         navBar.classList.remove('is-active');
