@@ -1,4 +1,4 @@
-import argparse #Parse cmnd line args
+import argparse
 import sys 
 import time
 from urllib.parse import urlencode 
@@ -24,16 +24,16 @@ def ingest_queries(
         delay_sec,
 ):
     total = 0
-    for q in queries:
-        for p in range(start_page, start_page + pages):
-            url = build_url(base_url, q, p, country, date_posted)
-            print(f"Ingesting: query='{q}', page={p}, country={country}, date_posted={date_posted}") 
+    for query in queries:
+        for page in range(start_page, start_page + pages):
+            url = build_url(base_url, query, page, country, date_posted)
+            print(f"Ingesting: query='{query}', page={page}, country={country}, date_posted={date_posted}") 
             try:
-                resp = requests.get(url, timeout=30)
-                if resp.status_code != 200:
-                    print(f"HTTP {resp.status_code}: {resp.text[:200]}") 
+                response = requests.get(url, timeout=30)
+                if response.status_code != 200:
+                    print(f"HTTP {response.status_code}: {response.text[:200]}") 
                     continue
-                data = resp.json()
+                data = response.json()
                 count = int(data.get("count", 0))
                 print(f"Upserted/processed {count} jobs")
                 total += count
@@ -81,5 +81,3 @@ def main(argv):
 
 if __name__ == "__main__":
     raise SystemExit(main(sys.argv[1:]))
-
-

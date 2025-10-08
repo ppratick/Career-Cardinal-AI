@@ -1,22 +1,16 @@
-// Load environment variables from a .env file into process.env
 require('dotenv').config();
 
-// Import necessary packages (like ingredients for our recipe)
-const express = require('express');  // Framework to build our web server
-const cors = require('cors');        // Allows our frontend to talk to our backend safely
-const sqlite3 = require('sqlite3').verbose();  // Database to store our jobs
-const fetch = require('node-fetch');  // Helps us fetch data from other websites (like JSearch API)
+const express = require('express');
+const cors = require('cors');
+const sqlite3 = require('sqlite3').verbose();
+const fetch = require('node-fetch');
 
-// Create our web server application
 const app = express();
-const PORT = process.env.PORT || 3000;  // Which door (port) our server will listen on
+const PORT = process.env.PORT || 3000;
 
-// Tell our server to:
-app.use(cors());         // Allow web browsers to communicate with our API
-app.use(express.json()); // Understand JSON data sent to it
+app.use(cors());
+app.use(express.json());
 
-// Connect to our database (or create it if it doesn't exist)
-// Think of this like opening a filing cabinet for our job data
 const db = new sqlite3.Database('jobs.db', (err) => {
     if (err) {
         console.error('DB error:', err.message);
@@ -25,18 +19,13 @@ const db = new sqlite3.Database('jobs.db', (err) => {
     }
 });
 
-// Get our JSearch API key from environment variables
-// This is like our special password to use the job search service
 const JSEARCH_API_KEY = process.env.JSEARCH_API_KEY;
 const JSEARCH_BASE_URL = process.env.JSEARCH_BASE_URL || 'https://jsearch.p.rapidapi.com';
 
-// Warn us if we're missing our API key
 if (!JSEARCH_API_KEY) {
     console.warn('Warning: JSEARCH_API_KEY is not set. Job search functionality will be disabled.');
 }
 
-// Create our main jobs table if it doesn't exist yet
-// This is like creating sections in our filing cabinet
 db.run(`
     CREATE TABLE IF NOT EXISTS jobs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -49,8 +38,6 @@ db.run(`
     )
 `);
 
-// Convert JSearch job data into our database format
-// Like translating from one language to another
 function mapJSearchJobToDB(job){
     return {
         job_id: job.job_id,
@@ -60,16 +47,14 @@ function mapJSearchJobToDB(job){
         employment_type: job.job_employment_type || null,
         description: job.job_description || null,
         apply_link: (job.job_apply_link || (Array.isArray(job.job_apply_links) ? job.job_apply_links[0] : null)) || null,
-        is_remote: job.job_is_remote ? 1 : 0 || null,
+        is_remote: job.job_is_remote ? 1 : 0,
         posted_date: job.job_posted_at_datetime_utc || job.job_posted_at_timestamp || null,
         salary_min: job.job_min_salary || null,
         salary_max: job.job_max_salary || null,
-        salary_currency: job.job_salary_currency|| null,
+        salary_currency: job.job_salary_currency || null,
     };
 }
 
-// Save or update a job in our database
-// If the job exists, update it; if it's new, add it
 function upsertJobListing(db, row){
     return new Promise((resolve, reject) => {
         const sql = `
@@ -89,7 +74,6 @@ function upsertJobListing(db, row){
                 salary_min = excluded.salary_min,
                 salary_max = excluded.salary_max,
                 salary_currency = excluded.salary_currency
-
         `;
         db.run(
             sql, 
@@ -106,7 +90,6 @@ function upsertJobListing(db, row){
                 row.salary_min,
                 row.salary_max,
                 row.salary_currency,
-
             ], 
             function(err) {
                 if(err) return reject(err);
@@ -116,14 +99,12 @@ function upsertJobListing(db, row){
     });
 }
 
-// ROUTE 1: Search for jobs using JSearch API
-// When someone visits /api/jobs/search, this code runs
 app.get('/api/jobs/search', async (req, res) => {
     try{
         const query = (req.query.query || '').toString();
         const page = parseInt(req.query.page, 10) || 1;
-        const country = (req.query.country, 'us').toString();
-        const date_posted = (req.query.date_posted, 'all').toString();
+        const country = (req.query.country || 'us').toString();
+        const date_posted = (req.query.date_posted || 'all').toString();
         if(!query) {
             return res.status(400).json({error: 'Missing query parameter: query'});
         }
@@ -159,7 +140,7 @@ app.get('/api/jobs/search', async (req, res) => {
                 console.error('Failed to upsert job', row.job_id, e.message);
             }
         }
-        const result = jobs.map(mapJSearchJobToDB)
+        const result = jobs.map(mapJSearchJobToDB);
         res.json({count: result.length, jobs: result});
     }catch (err){
         console.error('Error in /api/jobs/search:', err);
@@ -167,18 +148,16 @@ app.get('/api/jobs/search', async (req, res) => {
     }
 });
 
-// ROUTE 2: Get jobs from our database
-// When someone visits /api/jobs, this code runs
 app.get('/api/jobs', (req, res) =>{
-    const q = (req.query.q || '').toString().trim();
+    const query = (req.query.q || '').toString().trim();
     const limit = Math.min(parseInt(req.query.limit, 10) || 50, 100); 
     const offset = (parseInt(req.query.offset, 10) || 0); 
     const params = [];
     let whereClause = '';
-    if (q) {
+    if (query) {
         whereClause = `WHERE title LIKE ? OR company LIKE ? OR location LIKE ?`;
-        const likeQ = `%${q}%`;
-        params.push(likeQ, likeQ, likeQ);
+        const likeQuery = `%${query}%`;
+        params.push(likeQuery, likeQuery, likeQuery);
     }
     const sql = `SELECT id, job_id, title, company, location, employment_type, description, apply_link, is_remote, posted_date, salary_min, salary_max, salary_currency
                  FROM job_listings ${whereClause}
@@ -194,8 +173,6 @@ app.get('/api/jobs', (req, res) =>{
     });
 });
 
-// Create our job_listings table if it doesn't exist
-// This table stores more detailed information about each job
 db.run(`
     CREATE TABLE IF NOT EXISTS job_listings (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -216,8 +193,6 @@ db.run(`
     )
 `);
 
-// ROUTE 3: Get all saved jobs
-// Returns every job in our database
 app.get('/jobs', (req, res) => {
     db.all('SELECT * FROM jobs', [], (err, rows) => {
         if (err) {
@@ -226,10 +201,33 @@ app.get('/jobs', (req, res) => {
         }
         res.json(rows);
     });
-} );
+});
 
-// ROUTE 4: Save a new job
-// Adds a new job to our database
+app.get('/api/jobs/count', (req, res) => {
+    const query = (req.query.q || '').toString().trim();
+
+    const params = [];
+
+    let whereClause = '';
+
+    if (query) {
+        whereClause = `WHERE title LIKE ? OR company LIKE ? OR location LIKE ?`;
+        const likeQuery = `%${query}%`;
+        params.push(likeQuery, likeQuery, likeQuery);
+    }
+
+    const countSQL = `SELECT COUNT(*) as total FROM job_listings ${whereClause}`;
+
+    db.get(countSQL, params, (err, row) => {
+        if (err) {
+            console.error('Error counting jobs:', err.message);
+            return res.status(500).json({error: 'failed to count jobs'});
+        }
+
+        res.json({ total: row ? row.total : 0 });
+    });
+});
+
 app.post('/jobs', (req, res) => {
     const {title, company, date, link, notes, status} = req.body;
     const query = 'INSERT INTO jobs (title, company, date, link, notes, status) VALUES (?, ?, ?, ?, ?, ?)';
@@ -242,13 +240,11 @@ app.post('/jobs', (req, res) => {
     });
 });
 
-// ROUTE 5: Update an existing job
-// Changes information about a job we already have
 app.put('/jobs/:id', (req, res) =>{
-    const jobID = req.params.id;
+    const jobId = req.params.id;
     const {title, company, date, link, notes, status} = req.body;
     const query = 'UPDATE jobs SET title = ?, company = ?, date = ?, link = ?, notes = ?, status = ? WHERE id = ?';
-    db.run(query, [title, company, date, link, notes, status || 'saved', jobID], function(err) {
+    db.run(query, [title, company, date, link, notes, status || 'saved', jobId], function(err) {
         if (err) {
             console.error('Error updating jobs:', err.message);
             return res.status(500).json({error: 'failed to update job'});
@@ -257,11 +253,9 @@ app.put('/jobs/:id', (req, res) =>{
     });
 });
 
-// ROUTE 6: Delete a job
-// Removes a job from our database
 app.delete('/jobs/:id', (req, res) =>{
-    const jobID = req.params.id;
-    db.run('DELETE FROM jobs WHERE id = ?', [jobID], function(err){
+    const jobId = req.params.id;
+    db.run('DELETE FROM jobs WHERE id = ?', [jobId], function(err){
          if (err) {
             console.error('Error deleting jobs:', err.message);
             return res.status(500).json({error: 'failed to delete job'});
@@ -270,12 +264,10 @@ app.delete('/jobs/:id', (req, res) =>{
     })
 }); 
 
-// Test route to check if server is running
 app.get('/', (req, res) => {
     res.send('Backend is running!');
 });
 
-// Start our server and listen for requests
 app.listen(PORT, () => {
     console.log(`Server started at http://localhost:${PORT}`);
 });

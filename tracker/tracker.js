@@ -1,14 +1,5 @@
-// ========================================
-// Job Tracker - Main JavaScript File
-// This file handles all the interactive features of our job tracking board
-// ========================================
-
-// The website address where our server is running
-// We'll use this to save and load job data
 const API_BASE_URL = "http://localhost:3000";
 
-// Helper function to talk to our server
-// This is like sending a letter to the server asking for information or changes
 async function apiCall(endpoint, options ={}) {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers: {
@@ -23,8 +14,6 @@ async function apiCall(endpoint, options ={}) {
   return response.json();
 };
 
-// When the webpage first loads, get all saved jobs from the server
-// Think of this like opening a filing cabinet and putting all jobs on the board
 window.addEventListener('DOMContentLoaded', async() => {
   try {
     const jobs = await apiCall('/jobs')
@@ -44,46 +33,33 @@ window.addEventListener('DOMContentLoaded', async() => {
   }
 });
 
-// Keep track of which job card is being dragged
-// This helps us remember what we're moving and where it came from
 let draggedJob = { job: null, sourceColumnId: '' };
 
-// Create a new job card that can be edited, moved, and deleted
-// Think of this like creating a digital sticky note for each job
 function createJobCard(job) {
 
-  // Create the main container for our job card
   const card = document.createElement('div');
   card.className = 'job-card';
-  card.setAttribute('draggable', 'true'); // Makes it moveable
+  card.setAttribute('draggable', 'true');
   card.setAttribute('data-job-id', job.id);
 
-  // Add the job title at the top of the card
-  // Like writing the job title at the top of a sticky note
   const titleSpan = document.createElement('span');
   titleSpan.className = 'job-title';
   titleSpan.textContent = job.title;
   card.appendChild(titleSpan);
 
-  // Create two views for the card:
-  // 1. Display view - what you normally see
-  // 2. Edit view - appears when you click "Edit"
   const displayDiv = document.createElement('div');
   displayDiv.className = 'job-details';
-  // DYNAMIC DATE LABEL: Show "Date Saved" for saved jobs, "Date Applied" for others
   const dateLabel = job.status === 'saved' ? 'Date Saved:' : 'Date Applied:';
   displayDiv.innerHTML = `
     <div><strong>Company:</strong> ${job.company || ''}</div>
     <div><strong>${dateLabel}</strong> ${job.date || ''}</div>
-    <div><strong>Job Link:</strong> <a href="${job.link || '#'}" target="_blank" class="job-link">${job.link ? 'View Job Posting' : 'No link'}</a></div> <!-- CLEAN LINK DISPLAY: Shows "View Job Posting" instead of long URL -->
+    <div><strong>Job Link:</strong> <a href="${job.link || '#'}" target="_blank" class="job-link">${job.link ? 'View Job Posting' : 'No link'}</a></div>
     <div><strong>Notes:</strong> ${job.notes || ''}</div>
   `;
 
-  // Edit mode has input fields for changing job details
-  // Like turning our sticky note into a form we can edit
   const editDiv = document.createElement('div');
   editDiv.className = 'job-details';
-  editDiv.style.display = 'none'; // Hidden until user clicks "Edit"
+  editDiv.style.display = 'none';
   editDiv.innerHTML = `
     <label><strong>Position:</strong><br><input type="text" class="edit-title" value="${job.title || ''}" /></label><br>
     <label><strong>Company:</strong><br><input type="text" class="edit-company" value="${job.company || ''}" /></label><br>
@@ -94,8 +70,6 @@ function createJobCard(job) {
     <button class="cancel-button">Cancel</button>
   `;
 
-  // Add buttons to edit and delete the job
-  // These let us modify or remove jobs from our board
   const editButton = document.createElement('button');
   editButton.textContent = 'Edit';
   editButton.className = 'edit-button';
@@ -106,18 +80,13 @@ function createJobCard(job) {
   });
   displayDiv.appendChild(editButton);
 
-  // Append display and edit sections to card
   card.appendChild(displayDiv);
   card.appendChild(editDiv);
 
-  // Prevent clicks on buttons from triggering card click events
   card.addEventListener('click', (e) => {
     if (e.target.closest('button')) return;
   });
 
-  // -------------------
-  // Delete button
-  // -------------------
   const deleteButton = document.createElement('button');
   deleteButton.className = 'delete-button';
   deleteButton.textContent = 'X';
@@ -125,7 +94,6 @@ function createJobCard(job) {
     try {
      await apiCall(`/jobs/${job.id}`, {
       method: 'DELETE'
-      
      });
      card.remove();
      console.log(`${job.id} was successfully deleted`);
@@ -136,8 +104,6 @@ function createJobCard(job) {
   });
   card.appendChild(deleteButton);
 
-  // Handle what happens when we save changes to a job
-  // This updates both the display and saves to the server
   card.querySelector('.update-button').addEventListener('click', async () => {
     try{
       const updatedValues = {
@@ -154,12 +120,11 @@ function createJobCard(job) {
       });
       Object.assign(job, updatedValues);
       titleSpan.textContent = job.title;
-      // DYNAMIC DATE LABEL: Update label after editing (saved vs applied)
       const dateLabel = job.status === 'saved' ? 'Date Saved:' : 'Date Applied:';
       displayDiv.innerHTML = `
         <div><strong>Company:</strong> ${job.company || ''}</div>
         <div><strong>${dateLabel}</strong> ${job.date || ''}</div>
-        <div><strong>Job Link:</strong> <a href="${job.link || '#'}" target="_blank" class="job-link">${job.link ? 'View Job Posting' : 'No link'}</a></div> <!-- CLEAN LINK DISPLAY: Shows "View Job Posting" instead of long URL -->
+        <div><strong>Job Link:</strong> <a href="${job.link || '#'}" target="_blank" class="job-link">${job.link ? 'View Job Posting' : 'No link'}</a></div>
         <div><strong>Notes:</strong> ${job.notes || ''}</div>
       `;
       const newEditButton = document.createElement('button');
@@ -180,9 +145,6 @@ function createJobCard(job) {
     }
   });
 
-  // -------------------
-  // Cancel button logic — restores original values and switches back to display mode
-  // -------------------
   card.querySelector('.cancel-button').addEventListener('click', () => {
     editDiv.querySelector('.edit-title').value = job.title || '';
     editDiv.querySelector('.edit-company').value = job.company || '';
@@ -193,8 +155,6 @@ function createJobCard(job) {
     displayDiv.style.display = 'block';
   });
 
-  // Set up drag and drop so we can move jobs between columns
-  // This lets us update a job's status by dragging it
   card.addEventListener('dragstart', () => {
     draggedJob.job = job;
     draggedJob.sourceColumnId = card.closest('.column').id;
@@ -203,12 +163,10 @@ function createJobCard(job) {
   return card;
 }
 
-// Make our columns accept dragged job cards
-// This lets us drop jobs into different status columns
 document.querySelectorAll('.column-content').forEach(container => {
   container.addEventListener('dragover', event => {
     event.preventDefault();
-    container.classList.add('drag-over'); // Visual cue for drop target
+    container.classList.add('drag-over');
   });
 
   container.addEventListener('dragleave', () => {
@@ -218,22 +176,21 @@ document.querySelectorAll('.column-content').forEach(container => {
   container.addEventListener('drop', async () => {
     container.classList.remove('drag-over');
     const targetColumn = container.closest('.column');
-    const targetColumnID = targetColumn.id;
+    const targetColumnId = targetColumn.id;
 
-    // Prevent dropping if no job is being dragged or dropping into same column
     if (!draggedJob.job) return;
-    if (draggedJob.sourceColumnId == targetColumnID) return;
+    if (draggedJob.sourceColumnId == targetColumnId) return;
 
     try {
       await apiCall(`/jobs/${draggedJob.job.id}`, {
         method: 'PUT',
         body: JSON.stringify({
           ...draggedJob.job,
-          status: targetColumnID
+          status: targetColumnId
         })
       });
 
-      draggedJob.job.status = targetColumnID;
+      draggedJob.job.status = targetColumnId;
 
       const newJobCard = createJobCard(draggedJob.job);
       container.insertBefore(newJobCard, container.querySelector('.input-wrapper'));
@@ -247,55 +204,45 @@ document.querySelectorAll('.column-content').forEach(container => {
         }
       }
 
-      console.log(`${draggedJob.job.id} moved from ${draggedJob.sourceColumnId} to ${targetColumnID}`);
+      console.log(`${draggedJob.job.id} moved from ${draggedJob.sourceColumnId} to ${targetColumnId}`);
     } catch (error) {
       console.error('Failed to update job status: ', error);
       alert('Failed to move job');
     }
 
-    // Reset dragged job tracking
     draggedJob = { job: null, sourceColumnId: '' };
   });
 });
 
-// -------------------
-// Toggle the visibility of the Add Job form
-// -------------------
 document.querySelectorAll('.add-button').forEach(button => {
   button.addEventListener('click', () => {
     const wrapper = button.previousElementSibling.querySelector('.input-wrapper');
     const isHidden = wrapper.style.display === 'none' || wrapper.style.display === '';
 
     if (isHidden) {
-      // Show input form and switch to "Cancel"
       wrapper.style.display = 'flex';
       button.textContent = 'Cancel';
     } else {
-      // Hide input form and switch back to "Add Job"
       wrapper.style.display = 'none';
       button.textContent = 'Add Job';
     }
   });
 });
 
-// -------------------
-// Submit button logic — adds a new job to a column
-// -------------------
 document.querySelectorAll('.submit-button').forEach(button => {
   button.addEventListener('click', async () => {
-    const columnID = button.getAttribute('data-column');
+    const columnId = button.getAttribute('data-column');
     const inputWrapper = button.parentElement;
 
-    // Get values from input fields
     const title = inputWrapper.querySelector('.job-title').value.trim();
     const company = inputWrapper.querySelector('.company-name').value.trim();
     const date = inputWrapper.querySelector('.date-applied').value.trim();
     const link = inputWrapper.querySelector('.job-link').value.trim();
     const notes = inputWrapper.querySelector('.job-notes')?.value.trim() || '';
 
-    if (title === '') return; // Require a title
+    if (title === '') return;
 
-    const jobData = {title, company, date, link, notes, status: columnID};
+    const jobData = {title, company, date, link, notes, status: columnId};
 
     try {
       const response = await apiCall('/jobs', {
@@ -312,7 +259,7 @@ document.querySelectorAll('.submit-button').forEach(button => {
         status: jobData.status
       }
       const newJobInput = createJobCard(completeJob);
-      const column = document.getElementById(columnID);
+      const column = document.getElementById(columnId);
       column.querySelector('.column-content').insertBefore(newJobInput, column.querySelector('.input-wrapper'));
 
       inputWrapper.querySelector('.job-title').value = '';
@@ -321,7 +268,6 @@ document.querySelectorAll('.submit-button').forEach(button => {
       inputWrapper.querySelector('.job-link').value = '';
       if (inputWrapper.querySelector('.job-notes')) {
         inputWrapper.querySelector('.job-notes').value = '';
-
       }
       button.parentElement.style.display = 'none';
 
@@ -334,23 +280,19 @@ document.querySelectorAll('.submit-button').forEach(button => {
 
   });
 });
-// Get the menu elements
 const hamburgerBtn = document.getElementById('hamburgerToggle');
 const navBar = document.getElementById('nav-bar');
 
-// Toggle menu when hamburger is clicked
 hamburgerBtn.addEventListener('click', () => {
     navBar.classList.toggle('is-active');
 });
 
-// Close menu when clicking outside
 document.addEventListener('click', (e) => {
     if (!navBar.contains(e.target) && !hamburgerBtn.contains(e.target)) {
         navBar.classList.remove('is-active');
     }
 });
 
-// Close menu when escape key is pressed
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         navBar.classList.remove('is-active');

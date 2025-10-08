@@ -1,19 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- The lang attribute helps screen readers and browsers know what language the page is in -->
 <head>
-  <!-- Meta tags provide information about the webpage to browsers -->
-  <meta charset="UTF-8"> <!-- Defines the character encoding (how text is stored) -->
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <!-- Viewport meta tag helps with mobile responsiveness - makes the page look good on phones -->
   
-  <title>Pathfinder - Job Finder</title> <!-- Shows up in browser tab -->
-  <link rel="stylesheet" href="finder.css"> <!-- Connects our CSS file for styling -->
+  <title>Pathfinder - Job Finder</title>
+  <link rel="stylesheet" href="finder.css">
 </head>
 
 <body>
-    <!-- Navigation Menu -->
-    <!-- Hamburger menu button (☰) for mobile devices -->
     <nav class="navigation">
     <button id="hamburgerToggle" aria-label="Toggle menu">☰</button>
     <div id="nav-bar">
@@ -22,17 +17,13 @@
     </div>
 </nav>
 
-  <main> <!-- Main content wrapper -->
-    <!-- Search and Filter Section -->
+  <main>
     <section class="board">
-      <!-- Search bar container with input and filter button -->
       <div class="search-bar-container">
         <input type="text" id="searchInput" placeholder="Search jobs..." />
-        <!-- Filter button that shows/hides filter options when clicked -->
         <button class="filter-button" onclick="toggleFilters()">Filters</button>
       </div>
 
-      <!-- Filter panel with job search options -->
       <div class="filter-panel" id="filterPanel">
         <div class="filter-group">
             <label for="jobType">Job Type:</label>
@@ -72,40 +63,38 @@
     </div>
     </section>
 
-    <!-- Tabs Section for Job Listings, Resume Match, and Job Map -->
     <section class="tabs-section">
-      <!-- Tab Navigation -->
       <div class="tab-navigation">
         <button class="tab-button active" data-tab="jobs">Job Listings</button>
         <button class="tab-button" data-tab="resume">Resume Match</button>
         <button class="tab-button" data-tab="map">Job Map</button>
       </div>
 
-      <!-- Tab Content -->
       <div class="tab-content">
-        <!-- Jobs Tab -->
         <div id="jobs-tab" class="tab-pane active">
           <section class="job-listings-section">
-            <h2>Top Job Listings</h2>
-            <!-- Container where JavaScript will add job cards -->
+            <h2>Job Listings</h2>
+
             <div class="job-listings-container"></div>
+
+            <div class="pagination-controls">
+              <button id="prevPage" disabled>Previous</button>
+              <span id="pageInfo">Page 1</span>
+              <button id="nextPage" disabled>Next</button>
+            </div>
           </section>
         </div>
 
-        <!-- Resume Tab -->
         <div id="resume-tab" class="tab-pane">
           <section class="resume-upload-section">
             <h2>Upload Your Resume</h2>
             <p class="resume-subtext">Get job recommendations tailored to your skills using AI</p>
             
-            <!-- Resume upload form -->
             <form id="resumeForm" class="resume-form">
-              <!-- File input that only accepts document files -->
               <input type="file" id="resumeFile" accept=".pdf,.doc,.docx" required />
               <button type="submit">Get Suggestions</button>
             </form>
 
-            <!-- Container for AI-suggested jobs -->
             <div id="suggested-jobs" class="suggested-jobs">
               <h3>Suggested Jobs</h3>
               <p class="placeholder-text">Upload your resume to see tailored job suggestions here.</p>
@@ -113,11 +102,9 @@
           </section>
         </div>
 
-        <!-- Map Tab -->
         <div id="map-tab" class="tab-pane">
           <section class="map-section">
             <h2>Job Locations</h2>
-            <!-- Container where the map will be displayed -->
             <div id="map"></div>
           </section>
         </div>
@@ -125,8 +112,6 @@
     </section>
   </main>
 
-  <!-- Connects our JavaScript file -->
-  <!-- Placed at the bottom so the page loads faster -->
   <script src="finder.js"></script>
 </body>
 </html>
